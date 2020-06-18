@@ -1,1 +1,68 @@
-<h1><%=name%></h1>
+<%- include('header.ejs') %>
+
+<h1><% if(isLoggedIn==true){%><%={name}%><%}else{%><%-include('login.ejs')%><%} %></h1>
+
+<div class = dashboard-main>
+    <h1 style='padding: 10px'>Sacred-World Dashboard</h1>
+    <ul class="nav nav-pills" style="background-color: rgba(255, 255, 255, 0.246); padding: 10px;">
+        <li class="nav-item">
+          <a class="nav-link active" href="#">News</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Friends</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Settings</a>
+        </li>        
+      </ul>
+      <br>
+    <div class= dashboard-left>
+        <ul class="list-unstyled">
+            <li class="media">
+              <img src="assets/testing.png" class="mr-3" alt="..." width = "50px" style= 'margin-left: 5px'> 
+              <div class="media-body">
+                <h7>18 June 2020</h4>
+                <h5 class="mt-0 mb-1">Alpha Testing Announced</h5>
+                We are happy to announce that we will be ready for an alpha test for the game very soon. We hope to allow everyone participate in the alpha stage, however we are not sure about the capabilities of the free server we are using for the development.
+              </div>
+            </li>
+
+            <li class="media my-4">
+              <img src="assets/design.png" class="mr-3" alt="..." width = "50px" style= 'margin-left: 5px'>
+              <div class="media-body">
+                <h7>12 June 2020</h4>
+                <h5 class="mt-0 mb-1">Character Creation Started</h5>
+                Our character designers are hard at work, and we have already created 4 characters for the game. We are planning to create much more before the release of the game. We are always welcomed to suggestions and ideas for characters so feel free to send them in our discord which you can join <a href='https://discord.gg/xdq9jYA' target="_blank">HERE</a>
+              </div>
+            </li>  
+
+            <li class="media">
+              <img src="assets/webdev.png" class="mr-3" alt="..." width = "50px" style= 'margin-left: 5px'>
+              <div class="media-body">
+                <h7>12 June 2020</h4>
+                <h5 class="mt-0 mb-1">Sacred-World Development Started</h5>
+                We are happy to announce that the Sacred-World team have started on developing the 2 vs 2 strategy game. We are very excited to release the Alpha to users soon!
+              </div>
+            </li>
+          </ul>
+    </div>
+    <div class = dashboard-right>
+        <div class="card text-right" style="width: 18rem;">
+            <div class="card-body">
+              <h5 class="card-title">Join our Discord</h5>
+              <p class="card-text">We have a Discord server! Join to chat with other players, and also receive notification of announcements and updates.</p>
+              <a href="#" class="btn btn-primary">Join Server</a>
+            </div>
+          </div>
+          <br>
+          <div class="card text-right" style="width: 18rem;">
+            <div class="card-body">
+              <h5 class="card-title">Weekly Leaderboard</h5>
+              <p class="card-text">We always have a weekly leaderboard where you can participate against other players for a chance to win a prize!</p>
+              <a href="#" class="btn btn-primary">Check Leaderboard Page</a>
+            </div>
+          </div>
+    </div>
+
+
+</div>

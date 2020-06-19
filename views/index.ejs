@@ -1,22 +1,28 @@
 <%- include('header.ejs') %>
 
-<h1><% if(isLoggedIn==true){%><%={name}%><%}else{%><%-include('login.ejs')%><%} %></h1>
-
+<h1><% if(isLoggedIn==false){%><%-include('login.ejs')%><%}%></h1>
+<div class = errormessage>
+  <%- include('./partials/messages') %>
+</div>
 <div class = dashboard-main>
-    <h1 style='padding: 10px'>Sacred-World Dashboard</h1>
+    
+      
+    <div class= dashboard-left>
+        <h1 style='padding: 10px 0 0 10px'>Sacred-World Dashboard</h1>
     <ul class="nav nav-pills" style="background-color: rgba(255, 255, 255, 0.246); padding: 10px;">
         <li class="nav-item">
           <a class="nav-link active" href="#">News</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Friends</a>
+          <a class="nav-link" href="/friends">Friends</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Settings</a>
-        </li>        
+          <a class="nav-link" href="/settings">Settings</a>
+        </li>    
+        <li class="nav-item">
+          <a class="nav-link" href="/characters">Characters</a>
+        </li>     
       </ul>
-      <br>
-    <div class= dashboard-left>
         <ul class="list-unstyled">
             <li class="media">
               <img src="assets/testing.png" class="mr-3" alt="..." width = "50px" style= 'margin-left: 5px'> 
@@ -51,7 +57,7 @@
             <div class="card-body">
               <h5 class="card-title">Join our Discord</h5>
               <p class="card-text">We have a Discord server! Join to chat with other players, and also receive notification of announcements and updates.</p>
-              <a href="#" class="btn btn-primary">Join Server</a>
+              <a href='https://discord.gg/xdq9jYA' target="_blank" class="btn btn-primary">Join Server</a>
             </div>
           </div>
           <br>
@@ -63,6 +69,6 @@
             </div>
           </div>
     </div>
-
-
-</div>
+ 
+    
+</div>  

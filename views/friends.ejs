@@ -1,0 +1,60 @@
+<%- include('header.ejs') %>
+
+<h1><% if(isLoggedIn==false){%><%-include('login.ejs')%><%}%></h1>
+<div class = errormessage>
+  <%- include('./partials/messages') %>
+</div>
+<div class = dashboard-main>
+    
+      
+    <div class= dashboard-left>
+        <h1 style='padding: 10px 0 0 10px'>Sacred-World Friends</h1>
+    <ul class="nav nav-pills" style="background-color: rgba(255, 255, 255, 0.246); padding: 10px;">
+        <li class="nav-item">
+          <a class="nav-link" href="/">News</a>
+        </li>
+        <li class="nav-item ">
+          <a class="nav-link active" href="#">Friends</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/settings">Settings</a>
+        </li> 
+        <li class="nav-item">
+          <a class="nav-link" href="/characters">Characters</a>
+        </li>        
+      </ul>
+      <div class="card text-center">
+        <div class="card-header">
+          Friends
+        </div>
+        <div class="card-body">
+          <h5 class="card-title">Under Development</h5>
+          <p class="card-text">We are currently hard at work, this feature will be ready soon. Check out discord for more information!</p>
+          <a href='https://discord.gg/xdq9jYA' target="_blank" class="btn btn-primary">Join Discord</a>
+        </div>
+        <div class="card-footer text-muted">
+          Coming soon!
+        </div>
+      </div>
+        
+    </div>
+    <div class = dashboard-right>
+        <div class="card text-right" style="width: 18rem;">
+            <div class="card-body">
+              <h5 class="card-title">Join our Discord</h5>
+              <p class="card-text">We have a Discord server! Join to chat with other players, and also receive notification of announcements and updates.</p>
+              <a href='https://discord.gg/xdq9jYA' target="_blank" class="btn btn-primary">Join Server</a>
+            </div>
+          </div>
+          <br>
+          <div class="card text-right" style="width: 18rem;">
+            <div class="card-body">
+              <h5 class="card-title">Weekly Leaderboard</h5>
+              <p class="card-text">We always have a weekly leaderboard where you can participate against other players for a chance to win a prize!</p>
+              <a href="#" class="btn btn-primary">Check Leaderboard Page</a>
+            </div>
+          </div>
+    </div>
+ 
+    
+</div>  

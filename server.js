@@ -2,158 +2,170 @@ if(process.env.NODE_ENV !== 'production'){
     require('dotenv').config()
 }
 
-var uniqid = require('uniqid');
 const express = require('express');
 const app = express();
 const bcrypt = require('bcrypt');
 const passport = require('passport');
-const flash = require('express-flash');
 const session = require('express-session');
+const flash = require('connect-flash');
+const router = express.Router();
+const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
+mongoStore = require('connect-mongo')(session)
+var back = require('express-back');
+
+
+
+var cookieSession = require('cookie-session');
+
+require('./config/passport-config')(passport);
 mongoose.connect(process.env.DATABASE_URL, { 
     useNewUrlParser: true,
     useUnifiedTopology: true
 })
+
+
 const db = mongoose.connection
+var MongoClient = require('mongodb').MongoClient
 db.on('error', error=> console.error(error))
 db.once('open', error=> console.log('connected'))
 
-var MongoClient = require('mongodb').MongoClient
+   
 
-
-
-
+const User = require('./models/User')
+const initializePassport = require("./config/passport-config");
 const { request } = require('http');
-
-
-const initializePassport = require("./passport-config");
+const{ authUser, authRole } = require('./config/auth')
 const { doesNotMatch } = require('assert');
-initializePassport(
-    passport,
-    email => users.find(user => user.email === email),
-    id => users.find(user => user.id === id)
-)
+const { MongoStore } = require('connect-mongo');
 
-app.set("view-engine","ejs")
-app.use(express.static(__dirname + '/public'));
-app.use(express.urlencoded({ extended: false}))
-app.use(flash())
+app.use(bodyParser());
+
+app.use(cookieSession({
+    secret: 'secret',
+    signed: true,
+    
+  }));
+
+app.use(back());
+
 app.use(session({
     secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: false
+    resave: true,
+    saveUninitialized: true,
+      
 }))
 
 app.use(passport.initialize())
+
 app.use(passport.session())
 
+app.use(flash());
+
+app.use((req, res, next)=>{
+    res.locals.success_msg = req.flash('success_msg');
+    res.locals.error_msg = req.flash('error_msg');
+    res.locals.error = req.flash('error');
+    next();
+})
+
+app.use('/', require('./routes/index'))
+
+app.use('/profile', require('./routes/profile'))
+
+app.use('/users', require('./routes/users'))
+
+app.use('/play', require('./routes/play'))
+
+app.use('/adminpanel', require('./routes/adminpanel'))
+
+app.use('/characters', require('./routes/character'))
+
+app.set("view-engine","ejs")
+
+app.use(express.static(__dirname + '/public'));
+
+app.use(express.urlencoded({ extended: false}))
+
+app.use(express.json())
 
 
-app.get("/", (req, res) =>{
-    var login = {}
-    if(req.isAuthenticated()){
-        res.render('index.ejs',{
-            isLoggedIn: true,
-            name: req.user.name
+
+//To register. We can probably move this to another file. but im too lazy atm
+app.post("/register", (req, res) => {     
+    const { name, email, password, repeat_password } = req.body;
+
+    let errors = []
+    if(!name){
+        errors.push({msg: 'Please enter name'})
+    }
+    if(!email){
+        errors.push({msg: 'Please enter email'})
+    }
+    if(!password){
+        errors.push({msg: 'Please enter password'})
+    }
+    if(!repeat_password){
+        errors.push({msg: 'Please repeat password'})
+    }
+
+    if(password != repeat_password){
+        errors.push({msg: 'Passwords do not match'})
+    }
+
+    if(password.length < 4){
+        errors.push({msg: 'Password too short'})
+    }
+
+    if(name )
+
+    if(errors.length > 0){
+        //error in creating user
+        res.render('register.ejs',{
+            query : req.query,
+            errors,
+            name,
+            email
         })
-       
     }else{
-        res.render('index.ejs',{
-            isLoggedIn: false
-           
-        })
+        //Create user here
+        User.findOne({email: email})
+            .then(user => {
+                if(user){
+                    errors.push({msg: "Account with email already created"})
+                    //Username already exists
+                    res.render('register.ejs',{
+                        query : req.query,
+                        errors,
+                        name,
+                        email
+                    })
+                }else{
+                    const newUser = new User({
+                        name,
+                        email,
+                        password
+                    });
+
+                    //Hashing Password
+                    bcrypt.genSalt(10, (err, salt) => bcrypt.hash(newUser.password, salt, (err, hash) => {
+                        if(err) throw err;
+                        newUser.password = hash;
+                        newUser.save()
+                            .then(user =>{
+                                req.flash('success_msg', 'You have successfully registered. Please log-in!');
+                                res.redirect("/")
+                            })
+                            .catch(err => console.log(err));
+                    }))
+                } 
+            });
     }
-    
-})
-
-app.get("/login", (req, res) =>{
-    res.render('login.ejs')
-})
-
-app.get("/header", (req, res)=> {
-       
-    
-    
-})
-
-app.get("/register", (req, res) =>{
-    res.render('register.ejs', {query : req.query})
-    
 })
 
 
 
-app.post("/register", async (req, res) => {
-     
-    try{
-        if(req.body.password != req.body.repeat_password){
-            res.redirect('/register?error=badpasswrod')
-        }   
-        const hashedPassword = await bcrypt.hash(req.body.password, 10)
-        user = ({
-            id: uniqid().toString(),
-            name: req.body.name,
-            email: req.body.email,
-            password: hashedPassword           
-        })
-        
-    } catch{
-        res.redirect('/register')
-    }
 
-    
-
-    MongoClient.connect(process.env.DATABASE_URL,{ useUnifiedTopology: true}, function(err, db) {        
-        if (err) throw err;
-        var dbo = db.db("sacredworld");
-        var $or = [ { name : req.body.name } ];       
-
-        dbo.collection("users").findOne({$or : $or}, function(err, result) {
-            
-            if (err) throw err;
-            if(result==null){                 
-                         
-                console.log('no user');                
-                dbo.collection("users").find({users:{$elemMatch: {email: user.email}}}, function(err, result) {
-                    if (err) throw err;
-                    if(result == null){ 
-                        console.log(result)
-                        console.log('no email');                       
-                        dbo.collection("users").insertOne(user, function(err, data) {
-                            if (err) throw err;
-                        console.log("1 document inserted");  
-                        
-                            res.redirect('/login')  
-                        }) 
-                    
-                    }else if(result != null){
-                        console.log('email taken')                
-                        var string = encodeURIComponent('emailtaken');
-                        res.redirect('/register?error=' + string)
-                    }
-                })
-            }else if(result != null){
-                console.log('user taken')                
-                var string = encodeURIComponent('usertaken');
-                res.redirect('/register?error=' + string)
-                              
-            }                      
-          });
-      });
-})
-
-app.post("/login", passport.authenticate('local',{
-    successRedirect: "/",
-    failureRedirect: "/login",
-    failureFlash: true,
-}))
-
-function checkAuthenticated(req, res, next){
-    if(req.isAuthenticated()){
-        return next();
-    }
-    res.redirect('/login')
-}
 
 app.listen(process.env.PORT || 5000)
 

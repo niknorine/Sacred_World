@@ -1,0 +1,24 @@
+<div class="card" style="width: 36rem;display: inline-block; margin: 10px">
+
+    <img style="width: 150px;margin: 10px;float:right" src="<%-char_img_dir%>" class="card-img-top" alt="...">
+    <div class="card-body">
+      <h5 class="card-title"><%-char_name%></h5>
+      <a class="btn btn-primary" data-toggle="collapse" href="#<%-char_name%>" role="button" aria-expanded="false" aria-controls="multiCollapseExample1">Open Character Info</a>
+      <div style= "width: 100%; display: inline-block;">
+      <div class="collapse multi-collapse" id="<%-char_name%>">
+        <div class = character-desc style= "width:24rem; display: inline-block;">
+            <h3>Character Description</h3>
+            <p style = "width: 100%" class="card-text"><%-char_desc%></p>  
+        </div> 
+        <div class = character-info style= "width:8rem; display: inline-block; float: right; vertical-align: top; position: relative;">
+            <h3>Info</h3>
+            <p style = "width: 100%" class="card-text">Age: <%-age%></p> 
+            <p style = "width: 100%" class="card-text">Height: <%-height%></p>  
+            <p style = "width: 100%" class="card-text">Weight: <%-weight%></p>  
+
+        
+        </div>  
+    </div>
+    </div>
+    </div>
+</div>

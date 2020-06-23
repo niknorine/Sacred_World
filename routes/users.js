@@ -6,7 +6,6 @@ const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
 require('../config/passport-config')(passport);
 const Characters = require('../models/Characters')
-var fs = require('fs');
 
 const db = mongoose.connection
 var MongoClient = require('mongodb').MongoClient

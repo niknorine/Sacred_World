@@ -1,10 +1,13 @@
 const express = require('express')
 const router = express.Router();
+const User = require('../models/User') 
+const app = express();
+const{ authUser, authRole } = require('../config/auth')
 
 
 
 router.get("/", (req, res) =>{
-    var login = {}
+
     if(req.isAuthenticated()){
         res.render('index.ejs',{
             isLoggedIn: true,
@@ -13,43 +16,44 @@ router.get("/", (req, res) =>{
        
     }else{
         res.render('index.ejs',{
-            isLoggedIn: false
-           
+            isLoggedIn: false           
         })
-    }
-    
+    }    
 })
+
 
 router.get("/settings", (req, res) =>{
-    var login = {}
-    if(req.isAuthenticated()){
+     if(req.isAuthenticated()){
         res.render('settings.ejs',{
             isLoggedIn: true,
-            user: req.user
-        })
-       
+            user: req.user,            
+        })       
     }else{
         res.render('settings.ejs',{
             isLoggedIn: false
            
         })
-    }
-    
+    }    
 })
-
-
-router.get("/friends", (req, res) =>{
-    var login = {}
+       
+router.get("/friends", authUser, (req, res) =>{
+    
     if(req.isAuthenticated()){
-        res.render('friends.ejs',{
-            isLoggedIn: true,
-            user: req.user
+        User.findOne({'name': req.user.name}).then(user =>{
+            //user.friends.push({status: "fff", user: "sfdfd"})
+            //user.save()
+            //console.log(user);
+            res.render('friends.ejs',{
+                isLoggedIn: true,
+                user: req.user,
+                friends: user.friends
+            })
         })
        
-    }else{
+       
+    }else{        
         res.render('friends.ejs',{
-            isLoggedIn: false
-           
+            isLoggedIn: false            
         })
     }
     

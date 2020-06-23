@@ -191,3 +191,58 @@ input, select {
     -moz-box-shadow: 0px 0px 9px 7px rgba(0,0,0,0.75);
     box-shadow: 0px 0px 9px 7px rgba(0,0,0,0.75);
 }
+
+.game-main{
+    width: 1280px;
+    margin: auto;
+    height: 720px;
+    background: white;
+    margin-top: 100px;
+}
+
+.game-top-header{
+    width: 100%;
+    height: 64px;
+    background-color: rgb(65, 65, 65);
+}
+
+.game-top-header li{
+    display: inline-block;
+    padding: 20px;
+    color: white;
+}
+
+.game-top-header li:hover{
+    background-color: red;
+}
+
+.game-main-options{
+    background-color: rgba(119, 119, 119, 0.198);
+    width: 80%;
+    height:80%;
+    margin: auto;
+    margin-top: 25px;
+}
+
+.gamebuttonhover:hover{
+    background-color: burlywood;
+    cursor: pointer;
+}
+
+.hover-disabled:hover{
+    background-color: rgba(83, 83, 83, 0.418);
+    filter: grayscale(100%);
+    cursor: not-allowed;
+}
+
+.player1{
+    width: 200px;
+    background-color: burlywood;
+}
+
+.player2{
+    width: 200px;
+    background-color: rgb(2, 1, 1);
+}
+
+

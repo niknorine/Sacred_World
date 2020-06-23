@@ -7,7 +7,7 @@
 <div class = dashboard-main>
     
       
-    <div class= dashboard-left>
+    <div style = "width: 100%" class= dashboard-left>
         <h1 style='padding: 10px 0 0 10px'>Sacred-World Friends</h1>
     <ul class="nav nav-pills" style="background-color: rgba(255, 255, 255, 0.246); padding: 10px;">
         <li class="nav-item">
@@ -23,38 +23,71 @@
           <a class="nav-link" href="/characters">Characters</a>
         </li>        
       </ul>
-      <div class="card text-center">
-        <div class="card-header">
+      <div style= "display: inline-block; width: 75%" class="card text-center">
+        <div  class="card-header">
           Friends
         </div>
-        <div class="card-body">
-          <h5 class="card-title">Under Development</h5>
-          <p class="card-text">We are currently hard at work, this feature will be ready soon. Check out discord for more information!</p>
-          <a href='https://discord.gg/xdq9jYA' target="_blank" class="btn btn-primary">Join Discord</a>
-        </div>
-        <div class="card-footer text-muted">
-          Coming soon!
-        </div>
-      </div>
+        <% if(!isLoggedIn){ %>
+          <h1>Please login to see friends</h1>  </div>
+        <%  } %>
+             
+        <% if(isLoggedIn){ %>          
         
-    </div>
-    <div class = dashboard-right>
-        <div class="card text-right" style="width: 18rem;">
-            <div class="card-body">
-              <h5 class="card-title">Join our Discord</h5>
-              <p class="card-text">We have a Discord server! Join to chat with other players, and also receive notification of announcements and updates.</p>
-              <a href='https://discord.gg/xdq9jYA' target="_blank" class="btn btn-primary">Join Server</a>
-            </div>
+        <% if(friends.length){%>               
+          <h1>Pending Friends</h1>
+         <% for(const friend of friends){ %>
+          <%if(friend.status == "Pending"){ %>            
+            <%-include("./partials/friends-pending.ejs", friend)%>
+            <% } %>
+         <% } %>
+         <h1>Friends</h1>
+        <% for(const friend of friends){ %>
+          <%if(friend.status == "Friends"){ %>            
+            <%-include("./partials/friends-confirmed.ejs", friend)%>
+            <% } %>
+         <% } %>
+         
+          <% }else{ %>
+            <h1>You have no friends</h1>
+            
+          <% } %>
+
           </div>
-          <br>
-          <div class="card text-right" style="width: 18rem;">
-            <div class="card-body">
-              <h5 class="card-title">Weekly Leaderboard</h5>
-              <p class="card-text">We always have a weekly leaderboard where you can participate against other players for a chance to win a prize!</p>
-              <a href="#" class="btn btn-primary">Check Leaderboard Page</a>
+          <div style="width: 200px; float: right" class= "search-friend">
+            <label>Search For Friends</label>
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="basic-addon1">@</span>
             </div>
+           
+            <input  id="#submit" name="name" type="text" class="form-control" placeholder="name" aria-label="Username" aria-describedby="basic-addon1">
+            
           </div>
+          </div>
+          
+          <div style = "display: inline-block; position: relative; left: 800px; top: -40px" class="dropdown-menu">
+            <%-include("./partials/friend-serach.ejs") %>
+          </div>
+          <%  } %>        
+    </div>    
     </div>
+
+    <script>  
+    // Using Ajax to send a form without refreshing page
+    $('#submit').on('submit', function(e){
+      alert('data sent!');
+        e.preventDefault(); 
+        $.ajax({
+            url: '/',
+            method: 'POST',
+            contentType: 'application/json',
+            success: function(html) {
+            alert('data sent!');
+            }
+        });
+        //return false; 
+    });
+    </script>
  
     
 </div>  

@@ -18,7 +18,7 @@
           
               
             <nav class="navbar navbar-expand-lg navbar-light bg-light">
-                <a class="navbar-brand" href="#">
+                <a class="navbar-brand" href="/">
                     <img src="/assets/logo.png" width="30" height="30" class="d-inline-block align-top" alt="" loading="lazy" style="margin-top: 3px;">
                     Sacred-World
                   </a>
@@ -28,17 +28,17 @@
                 <div class="collapse navbar-collapse" id="navbarNav">
                   <ul class="navbar-nav" style="width: 100%">
                     <li class="nav-item active">
-                      <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                      <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
                     </li>
                     <li class="nav-item">
-                      <a class="nav-link" href="#">Play</a>
+                      <a class="nav-link" href="/play">Play</a>
                     </li>
                     <li class="nav-item">
                       <a class="nav-link" href="#">Discord</a>
                     </li>
                     
                     
-                    <% if(isLoggedIn==true) { %> <%-"<a href='/users/logout'>SignOut</a><h4 style='float:right'>"+ user.name +"</h4>" %> <% }else if(isLoggedIn == false){%><%-'<li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown"><span class="glyphicon glyphicon-log-in"></span> Login</a><div class="dropdown-menu" style="padding: 15px;width: 400px; padding-bottom: 10px;"><form action ="/users/login" method = "POST"><div class="form-group"><label for="email">Username</label><input autocomplete="off" name = "name" type="name" class="form-control" id="name" required><small id="emailHelp" class="form-text text-muted">We will never share your email with anyone else.</small></div><div class="form-group"><label for="password">Password</label><input type="password" class="form-control" id="password" name="password" placeholder = "password" required></div><button type="submit" class="btn btn-primary">Submit</button><a style = "padding-left: 8px"href ="/users/register">Register</a></form></div></li>'%><%} %>  
+                    <% if(isLoggedIn==true) { %> <%-"<a href='/users/logout'>SignOut</a><h4 id = 'username' style='float:right'>"+ user.name +"</h4>" %> <% }else if(isLoggedIn == false){%><%-'<li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown"><span class="glyphicon glyphicon-log-in"></span> Login</a><div class="dropdown-menu" style="padding: 15px;width: 400px; padding-bottom: 10px;"><form action ="/users/login" method = "POST"><div class="form-group"><label for="email">Username</label><input autocomplete="off" name = "name" type="name" class="form-control" id="name" required><small id="emailHelp" class="form-text text-muted">We will never share your email with anyone else.</small></div><div class="form-group"><label for="password">Password</label><input type="password" class="form-control" id="password" name="password" placeholder = "password" required></div><button type="submit" class="btn btn-primary">Submit</button><a style = "padding-left: 8px"href ="/users/register">Register</a></form></div></li>'%><%} %>  
                     <% if(isLoggedIn==true && user.role == "admin"){ %> <%-include('./partials/header-admin.ejs') %><%}%>
                   </ul>
                 </div>

@@ -7,6 +7,7 @@ const session = require('express-session');
 
 //Load the users model
 const User = require('../models/User') 
+
 const { authenticate } = require('passport')
 
 module.exports = function(passport) {

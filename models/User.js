@@ -46,7 +46,20 @@ const UserSchema = new mongoose.Schema(
         date_created: {
             type: Date,
             default: Date.now
-        }
+        },
+        friends: [
+            {
+                status: {
+                type: String
+            },
+                user:{
+                    type: String
+                }
+
+            }
+            ]     
+        ,
+
     }
 )
 

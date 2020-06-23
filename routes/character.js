@@ -1,13 +1,17 @@
 const express = require('express')
 const router = express.Router();
 
+
 Characters = require('../models/Characters')
 const characters = [];
+const User = require('../models/User') 
 
 Characters.find()
     .then(character => {
         character.forEach(char => {
-            characters.push(char)
+            if(char.isReleased){
+                characters.push(char)
+            }
         });        
         
     })
@@ -16,6 +20,7 @@ Characters.find()
 router.get("/", (req, res) =>{
     var login = {}
     if(req.isAuthenticated()){
+              
         res.render('characters.ejs',{
             isLoggedIn: true,
             user: req.user,

@@ -16,6 +16,7 @@ var back = require('express-back');
 
 
 
+
 var cookieSession = require('cookie-session');
 
 require('./config/passport-config')(passport);
@@ -38,6 +39,7 @@ const { request } = require('http');
 const{ authUser, authRole } = require('./config/auth')
 const { doesNotMatch } = require('assert');
 const { MongoStore } = require('connect-mongo');
+const { Http2ServerRequest } = require('http2');
 
 app.use(bodyParser());
 
@@ -71,6 +73,7 @@ app.use((req, res, next)=>{
 
 app.use('/', require('./routes/index'))
 
+
 app.use('/profile', require('./routes/profile'))
 
 app.use('/users', require('./routes/users'))
@@ -78,6 +81,8 @@ app.use('/users', require('./routes/users'))
 app.use('/play', require('./routes/play'))
 
 app.use('/adminpanel', require('./routes/adminpanel'))
+
+app.use('/game', require('./routes/game'))
 
 app.use('/characters', require('./routes/character'))
 
@@ -150,9 +155,10 @@ app.post("/register", (req, res) => {
                     //Hashing Password
                     bcrypt.genSalt(10, (err, salt) => bcrypt.hash(newUser.password, salt, (err, hash) => {
                         if(err) throw err;
-                        newUser.password = hash;
+                        newUser.password = hash;   
+                                          
                         newUser.save()
-                            .then(user =>{
+                            .then(user =>{                                
                                 req.flash('success_msg', 'You have successfully registered. Please log-in!');
                                 res.redirect("/")
                             })

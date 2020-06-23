@@ -19,6 +19,11 @@ const CharacterSchema = new mongoose.Schema(
             required: true,
             default: "undefined"
         },
+        isReleased: {
+            type: Boolean,
+            required: true,
+            default: false
+        },
         visual_desc: {
             type: String,
             required: true,

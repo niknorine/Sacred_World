@@ -1,0 +1,104 @@
+wsServer.on('request', request => {
+    const connection = request.accept(null, require.origin)
+    console.log('Connected to websocket')
+    connection.on('open', () => console.log('opened!'))
+    connection.on('closed', () => console.log('closed!'))
+    
+    connection.on('message', message => {
+        const result = JSON.parse(message.utf8Data)
+       
+        //User Creating new game
+        if(result.method === 'create'){
+            const clientId = result.clientId
+            const gameId = guid();
+            user = user.name
+            //CHANGE THIS
+            games[gameId] = {
+                'id': gameId,
+                'characters': 3,
+                'clients': []
+            }
+
+            const payLoad = {
+                'method': 'create',
+                'game': games[gameId]
+            }
+
+            const connection = clients[clientId].connection
+            connection.send(JSON.stringify(payLoad));
+
+        }
+
+        //client wants to join
+        if(result.method === 'join'){
+            const clientId = result.clientId;
+            const gameId = result.gameId;
+            const selectedCharacters = {
+                'Character1': 'Shiro',
+                'Character2': 'Kyros',
+                'Character3': 'Zul'
+            }
+            const game = games[gameId];            
+            if(game.clients.length >= 2){
+                return;
+            }
+            const player_num = {'0': '1', '1':'2'}[game.clients.length]
+            game.clients.push({
+                'clientId': clientId,
+                'clientName': clientName,
+                'player_num': player_num,
+                'characters': selectedCharacters
+            })
+            
+            const payLoad = {
+                'method': 'join',
+                'game': game,
+                'characters': selectedCharacters
+            }            
+            //Giving info to all clients
+            game.clients.forEach(c => {
+                clients[c.clientId].connection.send(JSON.stringify(payLoad))
+            });
+        }
+
+        //client wants to see all games
+        if(result.method === 'find'){ 
+            const clientId = result.clientId;            
+            var payLoad = {};
+            listedGames = {                                              
+                'games': []
+            }
+            
+            const _game = listedGames;
+            
+            console.log(games)
+            Object.keys(games).forEach(g => {                
+                if(games[g].clients.length <= 1){
+                    _game.games.push({
+                        'gameId': g,
+                        'clients': games[g].clients[0].clientName
+                    }) 
+                }
+            })
+            payLoad = {
+                method: "find",
+                games: _game.games
+            }
+            clients[clientId].connection.send(JSON.stringify(payLoad))
+           
+        }
+    })
+
+    const clientId = user._id;
+    const clientName = user.name;
+    clients[clientId] = {
+        'connection': connection
+    }
+
+    const payLoad = {
+        'method': 'connect',
+        'clientId': clientId
+    }
+
+    connection.send(JSON.stringify(payLoad))
+})

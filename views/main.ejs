@@ -1,0 +1,261 @@
+<%-include('../views/header.ejs')%>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+</head>
+
+<body>
+    <canvas id="myCanvas" width="300" height="150" style="border:1px solid #d3d3d3;">
+
+
+    </canvas>
+    <div class = 'game-main'>
+        <div class = 'game-top-header'>
+            <ul style = "display: inline-block;">
+                <li>Main</li>
+                <li>Characters</li>
+                <li>Lore</li>
+                <li>Shop</li>
+                <li>Exit</li>
+            </ul>
+        </div>
+        <ul id = "divGames" class="list-unstyled">
+                    
+        </ul>
+        <div id = 'divPlayers'>
+
+        </div>
+        <div id = 'divBoard'>
+
+        </div>
+        <div class = 'game-main-options' id = 'game_menu'>
+          
+
+          
+            <!-- <div style = 'display: inline-block; width: 48%; margin: 5px; height: 172px;' class="card mb-3 hover-disabled" style="max-width: 540px;">
+                <div class="row no-gutters">
+                  <div class="col-md-4">
+                    <img src="/assets/match.png" style = "width: 100px;position: relative; padding: 0; margin: 0; top: 0px" class="card-img" alt="...">
+                  </div>
+                  <div class="col-md-8">
+                    <div class="card-body">
+                      <h5 class="card-title">Quick Match (Coming Soon)</h5>
+                      <p class="card-text">Click to start a QUICK MATCH. This will not impact your rating. You will gain reduced XP in this mode.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div style = 'display: inline-block; width: 48%; margin: 5px; height: 172px;' class="card mb-3 hover-disabled" style="max-width: 540px;">
+                <div class="row no-gutters">
+                  <div class="col-md-4">
+                    <img src="/assets/match.png" style = "width: 100px;position: relative; padding: 0; margin: 0; top: 0px" class="card-img" alt="...">
+                  </div>
+                  <div class="col-md-8">
+                    <div class="card-body">
+                      <h5 class="card-title">Ranked Match (Coming Soon)</h5>
+                      <p class="card-text">Click to start a RANKED MATCH. You will be matched against someone your rank. This will impact your rating. You will gain normal XP in this mode.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div id='btnCreate' style = 'display: inline-block; width: 48%; margin: 5px; height: 172px;' class="card mb-3 gamebuttonhover" style="max-width: 540px;">
+                <div class="row no-gutters">
+                  <div class="col-md-4">
+                    <img src="/assets/match.png" style = "width: 100px;position: relative; padding: 0; margin: 0; top: 0px" class="card-img" alt="...">
+                  </div>
+                  <div class="col-md-8">
+                    <div class="card-body">
+                      <h5 class="card-title">Create Match</h5>
+                      <p class="card-text">Click to create an UNRANKED MATCH. You will be able to invite a friend to play with. This will NOT impact your rating. You will gain no XP in this mode.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div id='btnJoinScreen' style = 'display: inline-block; width: 48%; margin: 5px; height: 172px;' class="card mb-3" style="max-width: 540px;">
+                <div class="row no-gutters">
+                  <div class="col-md-4">
+                    <img src="/assets/match.png" style = "width: 100px;position: relative; padding: 0; margin: 0; top: 0px" class="card-img" alt="...">
+                  </div>
+                  <div class="col-md-8">
+                    <div class="card-body">
+                      <h5  class="card-title">Join Match</h5>
+                      <p class="card-text">Click here to see all available matches that you can join! This will NOT impact your rating. You will gain no XP in this mode.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="input-group mb-3">
+                <input id = 'txtGameId' type="text" class="form-control" placeholder="Game ID" aria-label="Game ID" aria-describedby="button-addon2">
+                <div class="input-group-append">
+                  <button class="btn btn-outline-secondary" type="button" id="btnJoin">Join Game</button>
+                </div>
+              </div>                            
+        </div> -->
+        <div>
+          <button id = 'roombutton'>Click here to create a match</button>
+        </div>
+        <div id= 'rooms'></div> 
+
+        <div style = "display: none" id='joinGameWindow'>
+          <h1>Games</h1>
+
+        </div>
+
+
+    </div>
+</body>
+
+<script src = '/js/game.js'></script>
+
+<script>
+
+  let clientId = null; 
+  let gameId = null;
+  let ws = new WebSocket("ws://localhost:4000");
+
+  //HTML ELEMENTS
+  //btnCreate = document.getElementById("btnCreate");
+  //btnJoin = document.getElementById("btnJoin");
+  //txtGameId = document.getElementById("txtGameId");
+  //divPlayers = document.getElementById("divPlayers");
+  //divBoard = document.getElementById("divBoard");
+  //btnJoinScreen = document.getElementById("btnJoinScreen");
+  //game_menu = document.getElementById('game_menu');
+  //joinGameWindow = document.getElementById('joinGameWindow');
+  //divGames = document.getElementById("divGames");
+  
+  //EVENTS
+
+  //btnJoinScreen.addEventListener('click', e => {
+  //  game_menu.style.display = "none";
+  //  joinGameWindow.style.display = 'block';
+  //  const payLoad = {
+  //    'method': 'find',
+  //    'clientId': clientId      
+  //  }
+  //  ws.send(JSON.stringify(payLoad));
+  //})
+
+
+ function onJoinClick(e){
+  if(gameId === null){      
+      gameId = e.dataset.game;
+    }
+    const payLoad = {
+      'method': 'join',
+      'clientId': clientId,
+      'gameId': gameId
+    }    
+    ws.send(JSON.stringify(payLoad));  
+ }
+
+
+    
+
+  //btnCreate.addEventListener('click', e =>{
+  //  const payLoad = {
+  //    'method': 'create',
+  //    'clientId': clientId      
+  //  }
+  //  ws.send(JSON.stringify(payLoad));
+  //})
+  
+  ws.onmessage = message =>{
+      const response = JSON.parse(message.data);
+      //connect 
+      if(response.method === 'connect'){
+        clientId = response.clientId;
+        //console.log(clientId)
+      }
+      //create
+      if(response.method === 'create'){
+        gameId = response.game.id;
+
+        if(gameId === null){
+          gameId = e.textContent;
+        }
+        const payLoad = {
+          'method': 'join',
+          'clientId': clientId,
+          'gameId': gameId
+        }
+      //console.log(payLoad)
+      ws.send(JSON.stringify(payLoad));
+        
+      }
+
+      //Join
+      if(response.method === 'join'){
+        game_menu.style.display = "none";
+        joinGameWindow.style.display = 'none';
+        divGames.style.display = 'none';
+        var currentPlayers = [];
+        var player_names = [];
+        const game = response.game;
+        console.log("i have joined the game")
+        while(divPlayers.firstChild)
+          divPlayers.removeChild (divPlayers.firstChild)
+        
+        game.clients.forEach(c => {
+          const d = document.createElement('div');
+          d.style.width = '200px';
+          d.style.backgroundColor = 'Red';
+          d.textContent = c.player_num + ": " + c.clientName
+          divPlayers.appendChild(d);
+          console.log(game)
+          currentPlayers.push(c.player_num)
+          player_names.push(c.clientName)
+          
+        }) 
+        //Render the characters
+        console.log(currentPlayers)
+        if(currentPlayers.length === 1){
+              return
+        }
+        for(const player of currentPlayers){
+          for(let i =0; i < game.characters; i++){
+            
+            const b = document.createElement("button");
+            b.id = "character" + i;
+            b.className =  "player"+player;
+            b.dataset.player = player_names[player-1]
+            b.tag = i+1;
+            b.addEventListener("click", e => {
+
+            })
+            divBoard.appendChild(b);
+
+          } 
+        }
+              
+                         
+        
+
+      }
+
+      if(response.method === "find"){ 
+        
+
+        
+        const game = response.games;
+        game.forEach(g => {
+          const d = document.createElement('li');
+          d.className = "media"
+          d.id = "joinGameClick"
+          d.setAttribute("onclick","onJoinClick(this)")
+          d.dataset.game = g.gameId
+          d.style.width = '200px';          
+          d.textContent = g.clients
+          divGames.appendChild(d);
+        })
+      }
+  }
+
+</script>
+</html>

@@ -147,7 +147,7 @@ export class GameScene extends Phaser.Scene{
                 //random energy. We should move this to server side. We also need to change this so that it actually does it correctly.disabled
                 //atm it's here for testing purposes
                 Object.keys(Energy).forEach(en =>{
-                    Energy[en] = Math.floor(Math.random() * 5);                
+                    Energy[en] = Math.floor(Math.random() * 6);                
                  })
 
                 // We have finished initiating the game. we make the variable true so we don't run that code again
@@ -306,32 +306,82 @@ export class GameScene extends Phaser.Scene{
         this.socket.on("use", function(skill, character) {
             //This is when the player wants to use a skill
             console.log(JSON.stringify(skill.currentCoolDown))
+            let haveEnergy = true;
+            //This pretty much doesnt matter because we have already disabled the ability to use skills with cool downs before
+            //But we must error check just in case, you never know when someone might be able to do something
             if(skill.currentCoolDown === 0){  
                 //if there is no cooldown on the skill
-                character1Skills.forEach(skills => {
-                    //loop through the skill so we can find the variable holding our skill we want to use                    
-                    if(JSON.stringify(skills.skill) == JSON.stringify(skill)){  
-                        //finds and updates the cooldown                      
-                        skills.skill.currentCoolDown = skill.coolDownDuration;
-                        //unselect the skill
-                        selectedSkill = undefined;
-                        //remove visuals
-                        skills.clearTint();
-                        //now we say that that character has used a skill this turn already
-                        char1_skills_used = true;
-                        //loop through the enemies so we can remove the visuals
-                        OpponentCharacter.forEach(char => {
-                            char.setInteractive(true)
-                            char.clearTint(); 
-                            for(let i = 0; i < characters.length; i++){
-                                char1_cooldowns[i].setVisible(true).setOrigin((i + 2) * -2.7 ,-0.6).setText("CD: " + character1Skills[i].skill.currentCoolDown).setColor("#FA4D57").setFontSize("20px").setStroke("#000000", 4)
-                            }                        
-                        })
+                //We want to check if they have the energy to be able to use 
+                let energyType = skill.cost; // This is the energy types of the skill. Most of them are 0 so we want to loop through and remove the 0 values
+                let totalEnergy = 0; 
+                let energyCostTotal = skill.cost.total
+                let randomAmount = 0; // This will be for the RANDOM energy type. We want to know if they have enough energy to be able to use the RANDOM.
+                let energyAmountWithoutRandom = 0;
 
+                Object.keys(Energy).forEach(type => {
+                    if(Energy[type] !== 0){                        
+                        totalEnergy += Energy[type]
+                        console.log("Total energy: " + totalEnergy)                 
                     }
-                });         
+                })
+
+
+                Object.keys(energyType).forEach(type => {
+                    if(energyType[type] !== 0){                                              
+                        if(type == "random"){                            
+                            randomAmount = energyType[type]
+                            console.log("Random Energy")                                                      
+                        }else{
+                            energyAmountWithoutRandom += energyType[type];
+                        }                 
+                        if(energyType[type] > Energy[type]){                 
+                            console.log("Not enough Energy")
+                            haveEnergy = false;
+                            return
+                        }else{
+                                              
+                        }                  
+                    }
+                })
                 
-                console.log("you used "+ JSON.stringify(skill) + " on "+ JSON.stringify(character))
+
+                if(haveEnergy){                    
+                    if(energyAmountWithoutRandom + randomAmount > totalEnergy){
+                        console.log("you don't have enough to use random")
+                        haveEnergy = false;
+                    }
+
+                    if(haveEnergy){
+                        console.log("you used "+ JSON.stringify(skill) + " on "+ JSON.stringify(character))
+                        character1Skills.forEach(skills => {
+
+                            //loop through the skill so we can find the variable holding our skill we want to use                    
+                            if(JSON.stringify(skills.skill) == JSON.stringify(skill)){  
+                                //finds and updates the cooldown                      
+                                skills.skill.currentCoolDown = skill.coolDownDuration;
+                                //unselect the skill
+                                selectedSkill = undefined;
+                                //remove visuals
+                                skills.clearTint();
+                                //now we say that that character has used a skill this turn already
+                                char1_skills_used = true;
+                                //loop through the enemies so we can remove the visuals
+                                OpponentCharacter.forEach(char => {
+                                    char.setInteractive(true)
+                                    char.clearTint(); 
+                                    for(let i = 0; i < characters.length; i++){
+                                        char1_cooldowns[i].setVisible(true).setOrigin((i + 2) * -2.7 ,-0.6).setText("CD: " + character1Skills[i].skill.currentCoolDown).setColor("#FA4D57").setFontSize("20px").setStroke("#000000", 4)
+                                    }                        
+                                })
+
+                            }
+                        });
+                    }
+                }else{
+                    console.log("you dont have enough energy")
+                }         
+                
+                
                 //skill.currentCoolDown = skill.coolDownDuration;   
                  
             }else{

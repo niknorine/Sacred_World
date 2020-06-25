@@ -18,6 +18,7 @@ class StanceOfDeath extends Phaser.GameObjects.Sprite{
             coolDownDuration: 2,
 
             cost: {
+                total: 2,
                 physical: 0,
                 magic: 0,
                 strategy: 0,

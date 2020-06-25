@@ -73,14 +73,7 @@ export default class Game extends Phaser.Scene{
             
         })
 
-
         
-
-        this.input.on('drag', function(pointer, gameObject, dragX, dragY){
-            gameObject.x = dragX;
-            gameObject.y = dragY;
-            self.socket.emit('turnPlayed', gameObject, self.isPlayerA)
-        })
         
     }
 

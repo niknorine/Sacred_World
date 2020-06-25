@@ -35,8 +35,13 @@ export class GameScene extends Phaser.Scene{
         let characters = [];
         let charactersHeath = [];
         let character1Skills = [];
-        let char1_skills = [];
+        let character2Skills = [];
+        let character3Skills = [];
+
         let char1_skills_used = false;
+        let char2_skills_used = false;
+        let char3_skills_used = false;
+        let randomSelect = undefined;
 
         let char1_cooldowns = [];
        
@@ -87,18 +92,28 @@ export class GameScene extends Phaser.Scene{
         let char1_skill3_cooldown = this.add.text(0, 0, 'Hello World', { font: '"Press Start 2P"' }).setDepth(101).setVisible(false) ;
         char1_cooldowns.push(char1_skill1_cooldown, char1_skill2_cooldown, char1_skill3_cooldown)
 
+        let char2_skill1 = new Skill(this,0,0, char1.skill.image, "Mirage Step").setDepth(102).setScale(0.03,0.03).setInteractive();
+        let char2_skill2 = new Skill(this,0,0, "skill1", "Something Else").setDepth(102).setScale(0.03,0.03).setInteractive();
+        let char2_skill3 = new StanceOfDeath(this,0,0, "skill2", "STANCE OF DEATH").setDepth(102).setScale(0.03,0.03).setInteractive();
+
+        let char3_skill1 = new Skill(this,0,0, char1.skill.image, "Mirage Step").setDepth(102).setScale(0.03,0.03).setInteractive();
+        let char3_skill2 = new Skill(this,0,0, "skill1", "Something Else").setDepth(102).setScale(0.03,0.03).setInteractive();
+        let char3_skill3 = new StanceOfDeath(this,0,0, "skill2", "STANCE OF DEATH").setDepth(102).setScale(0.03,0.03).setInteractive();
+
         //The energy text. We will change this from text to some ui. This is for testing purposes.
         var testtext = this.add.text(0, 0, 'skill info', { font: '"Press Start 2P"' }).setDepth(101).setVisible(true) ;
-        var physical = this.add.text(10, 600, '', { font: '"Press Start 2P"' }).setDepth(101).setVisible(true).setColor("#ffffff").setFontSize("14px").setStroke("#000000", 4).setText("Physical: " + Energy.physical);
-        var magic = this.add.text(160, 600, '', { font: '"Press Start 2P"' }).setDepth(101).setVisible(true).setColor("#ffffff").setFontSize("14px").setStroke("#000000", 4).setText("Magic: " + Energy.magic);
-        var strategy = this.add.text(310, 600, '', { font: '"Press Start 2P"' }).setDepth(101).setVisible(true).setColor("#ffffff").setFontSize("14px").setStroke("#000000", 4).setText("Strategy: " + Energy.strategy);
-        var agility = this.add.text(460, 600, '', { font: '"Press Start 2P"' }).setDepth(101).setVisible(true).setColor("#ffffff").setFontSize("14px").setStroke("#000000", 4).setText("Agility: " + Energy.agility);
-        var unique  = this.add.text(610, 600, '', { font: '"Press Start 2P"' }).setDepth(101).setVisible(true).setColor("#ffffff").setFontSize("14px").setStroke("#000000", 4).setText("Unique: " + Energy.unique);
-        var support = this.add.text(760, 600, '', { font: '"Press Start 2P"' }).setDepth(101).setVisible(true).setColor("#ffffff").setFontSize("14px").setStroke("#000000", 4).setText("Support: " + Energy.support);
+        var physical = this.add.text(10, 600, '', { font: '"Press Start 2P"' }).setDepth(101).setVisible(true).setColor("#ffffff").setFontSize("14px").setStroke("#000000", 4).setText("Physical: " + Energy.physical).setInteractive();
+        var magic = this.add.text(160, 600, '', { font: '"Press Start 2P"' }).setDepth(101).setVisible(true).setColor("#ffffff").setFontSize("14px").setStroke("#000000", 4).setText("Magic: " + Energy.magic).setInteractive();
+        var strategy = this.add.text(310, 600, '', { font: '"Press Start 2P"' }).setDepth(101).setVisible(true).setColor("#ffffff").setFontSize("14px").setStroke("#000000", 4).setText("Strategy: " + Energy.strategy).setInteractive();
+        var agility = this.add.text(460, 600, '', { font: '"Press Start 2P"' }).setDepth(101).setVisible(true).setColor("#ffffff").setFontSize("14px").setStroke("#000000", 4).setText("Agility: " + Energy.agility).setInteractive();
+        var unique  = this.add.text(610, 600, '', { font: '"Press Start 2P"' }).setDepth(101).setVisible(true).setColor("#ffffff").setFontSize("14px").setStroke("#000000", 4).setText("Unique: " + Energy.unique).setInteractive();
+        var support = this.add.text(760, 600, '', { font: '"Press Start 2P"' }).setDepth(101).setVisible(true).setColor("#ffffff").setFontSize("14px").setStroke("#000000", 4).setText("Support: " + Energy.support).setInteractive();
         // self.char1_skill3.on('pointerup', () => {
         
         //     this.socket.emit("useSkill", char1_skill3)
         // })
+
+        var characterText = this.add.text(100, 10, '', { font: '"Press Start 2P"' }).setDepth(101).setVisible(true) ;
 
         // WHEN BOTH PLAYERS HAVE CONNECTED!!!
         this.socket.on("playersConnected", function () {
@@ -113,6 +128,8 @@ export class GameScene extends Phaser.Scene{
                     characters.push(char1, char2, char3);
                     //we push the skills into an array too. We will need more arrays, atm its hard coded
                     character1Skills.push(char1_skill1, char1_skill2, char1_skill3);
+                    character2Skills.push(char2_skill1, char2_skill2, char2_skill3);
+                    character3Skills.push(char3_skill1, char3_skill2, char3_skill3);
                     // We declare the opponents characters
                     OpponentCharacter.push(char4,char5,char6)
                 }else{
@@ -120,6 +137,7 @@ export class GameScene extends Phaser.Scene{
                     OpponentCharacter.push(char1, char2, char3);
                     characters.push(char4,char5,char6)
                     character1Skills.push(char1_skill1, char1_skill2, char1_skill3);
+                    
                     for(let i = 0; i < character1Skills.length; i++){
                         character1Skills[i].setVisible(false)
                     }
@@ -131,13 +149,15 @@ export class GameScene extends Phaser.Scene{
                     
                     characters[i].setOrigin(-1, -2 * [i]).setInteractive().setVisible(true)
                     charactersHeath[i].setVisible(true).setOrigin(-1.6, -9 * [i]).setText("Health: " + characters[i].stats.health).setColor("#FA4D57").setFontSize("20px").setStroke("#000000", 4)
-                    char1_cooldowns[i].setVisible(true).setOrigin((i + 2) * -2.7 ,-0.6).setText("CD: " + character1Skills[i].skill.currentCoolDown).setColor("#FA4D57").setFontSize("20px").setStroke("#000000", 4)
+                    char1_cooldowns[i].setVisible(true).setOrigin((i + 2) * -1.7 ,-2.6).setText("CD: " + character1Skills[i].skill.currentCoolDown).setColor("#FA4D57").setFontSize("20px").setStroke("#000000", 4)
                 }
                 for(let i = 0; i < OpponentCharacter.length; i++){
                     OpponentCharacter[i].setOrigin(-10, -3 * [i]) .setInteractive().setVisible(true)       
                 }    
                 for(let i = 0; i < character1Skills.length; i++){
                     character1Skills[i].setOrigin((i + 2) * -1.7 ,-0.6)
+                    character2Skills[i].setOrigin((i + 2) * -1.7 ,-4.0)
+                    character3Skills[i].setOrigin((i + 2) * -1.7 ,-7.2)
                 }         
                
                 
@@ -175,7 +195,22 @@ export class GameScene extends Phaser.Scene{
         
         
         */
-       
+        let charactersTest = [];
+
+        this.socket.on('ShowCharacters', function(dataFromDataBase){
+            var i = 0
+            Object.keys(dataFromDataBase).forEach(char => {
+                i++
+                charactersTest[i] = dataFromDataBase[char].char_name
+                
+            })
+            for(var i = 1; i < charactersTest.length; i++){
+                console.log(charactersTest[i])
+                this["char"+i] = scene.add.text(100 * (i * i), "Character " + i + ": " + charactersTest[i] + " .", { font: '"Press Start 2P"' }).setDepth(101).setVisible(true) ;;
+                //characterText.text += "Character " + i + ": " + charactersTest[i] + " ."
+            }
+            
+        })
 
         this.socket.on('isPlayerA', function(){
             //First person to join is isPlayerA. We use this to load the characters correctly.
@@ -194,12 +229,12 @@ export class GameScene extends Phaser.Scene{
 
         //Update the energy. We probably want to change this so its 
         this.socket.on('updateEnergy', function(){                      
-            physical.setText("Physical: " + Energy.physical);
-            magic.setText("Magic: " + Energy.magic);
-            strategy.setText("Strategy: " + Energy.strategy);
-            agility.setText("Agility: " + Energy.agility);
-            unique.setText("Unique: " + Energy.unique);
-            support.setText("Support: " + Energy.support);
+            physical.setText("Physical: " + Energy.physical).setInteractive();
+            magic.setText("Magic: " + Energy.magic).setInteractive();
+            strategy.setText("Strategy: " + Energy.strategy).setInteractive();
+            agility.setText("Agility: " + Energy.agility).setInteractive();
+            unique.setText("Unique: " + Energy.unique).setInteractive();
+            support.setText("Support: " + Energy.support).setInteractive();
         })
 
 
@@ -274,17 +309,47 @@ export class GameScene extends Phaser.Scene{
 
         char1_skill1.on("pointerdown", () => { 
                    
-            this.socket.emit("clickSkill",char1_skill1.skill)
+            this.socket.emit("clickSkill",char1_skill1.skill, char1)
             console.log(char1_skill1.skill)
         })
 
         char1_skill2.on("pointerdown", () => {
-            this.socket.emit("clickSkill",char1_skill2.skill)
+            this.socket.emit("clickSkill",char1_skill2.skill, char1)
         })
 
         char1_skill3.on("pointerdown", () => {
-            this.socket.emit("clickSkill",char1_skill3.skill)
+            this.socket.emit("clickSkill",char1_skill3.skill, char1)
         })     
+
+        
+        char2_skill1.on("pointerdown", () => { 
+                   
+            this.socket.emit("clickSkill",char2_skill1.skill, char2)
+            console.log(char2_skill1.skill)
+        })
+
+        char2_skill2.on("pointerdown", () => {
+            this.socket.emit("clickSkill",char2_skill2.skill, char2)
+        })
+
+        char2_skill3.on("pointerdown", () => {
+            this.socket.emit("clickSkill",char2_skill3.skill, char2)
+        })  
+
+        
+        char3_skill1.on("pointerdown", () => { 
+                   
+            this.socket.emit("clickSkill",char3_skill1.skill, char3)
+            console.log(char3_skill1.skill)
+        })
+
+        char3_skill2.on("pointerdown", () => {
+            this.socket.emit("clickSkill",char3_skill2.skill, char3)
+        })
+
+        char3_skill3.on("pointerdown", () => {
+            this.socket.emit("clickSkill",char3_skill3.skill, char3)
+        })  
 
         char4.on('pointerup', () => {    
             console.log(selectedSkill) 
@@ -311,7 +376,30 @@ export class GameScene extends Phaser.Scene{
             console.log(character)
         })
 
+        physical.on('pointerup', () => {
+           
+            //We should probably make a function to update the energy, but i cba atm
+            randomSelect = "physical"
+                           
+        })
+
+
         this.socket.on("use", function(skill, character) {
+            useSkill(skill, character)
+            
+        })  
+
+        
+        function updateEnergy(){
+            physical.setText("Physical: " + Energy.physical);
+            magic.setText("Magic: " + Energy.magic);
+            strategy.setText("Strategy: " + Energy.strategy);
+            agility.setText("Agility: " + Energy.agility);
+            unique.setText("Unique: " + Energy.unique);
+            support.setText("Support: " + Energy.support);
+        }
+
+        function useSkill (skill, character){
             //This is when the player wants to use a skill
             console.log(JSON.stringify(skill.currentCoolDown))
             let haveEnergy = true;
@@ -325,6 +413,9 @@ export class GameScene extends Phaser.Scene{
                 let energyCostTotal = skill.cost.total
                 let randomAmount = 0; // This will be for the RANDOM energy type. We want to know if they have enough energy to be able to use the RANDOM.
                 let energyAmountWithoutRandom = 0;
+                let energyToUse = [];
+                let energyObj = {};
+                let isRandom = false;
 
                 Object.keys(Energy).forEach(type => {
                     if(Energy[type] !== 0){                        
@@ -335,8 +426,13 @@ export class GameScene extends Phaser.Scene{
 
 
                 Object.keys(energyType).forEach(type => {
-                    if(energyType[type] !== 0){                                              
-                        if(type == "random"){                            
+                    if(energyType[type] !== 0){   
+                        if(type !== "total" && type !== "random"){
+                            energyObj[type] = energyType[type]
+                            
+                        }                                          
+                        if(type == "random"){   
+                            isRandom = true;                         
                             randomAmount = energyType[type]
                             console.log("Random Energy")                                                      
                         }else{
@@ -361,6 +457,22 @@ export class GameScene extends Phaser.Scene{
 
                     if(haveEnergy){
                         console.log("you used "+ JSON.stringify(skill) + " on "+ JSON.stringify(character))
+
+
+                        Object.keys(energyObj).forEach(energy => {
+                            Energy[energy] -= energyObj[energy];
+                            //We should probably make a function to update the energy, but i cba atm
+                            updateEnergy();
+                                               
+                        })
+
+                        if(isRandom){
+                            Energy["physical"] -= randomAmount;
+                            updateEnergy();
+                        }
+
+                        
+
                         character1Skills.forEach(skills => {
 
                             //loop through the skill so we can find the variable holding our skill we want to use                    
@@ -378,7 +490,7 @@ export class GameScene extends Phaser.Scene{
                                     char.setInteractive(true)
                                     char.clearTint(); 
                                     for(let i = 0; i < characters.length; i++){
-                                        char1_cooldowns[i].setVisible(true).setOrigin((i + 2) * -2.7 ,-0.6).setText("CD: " + character1Skills[i].skill.currentCoolDown).setColor("#FA4D57").setFontSize("20px").setStroke("#000000", 4)
+                                        char1_cooldowns[i].setText("CD: " + character1Skills[i].skill.currentCoolDown)
                                     }                        
                                 })
 
@@ -395,8 +507,8 @@ export class GameScene extends Phaser.Scene{
             }else{
                 console.log("you have a cooldown on this skill")
             }
-            
-        })  
+        }
+
     }  
 
     update(){

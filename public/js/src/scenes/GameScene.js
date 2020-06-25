@@ -266,7 +266,14 @@ export class GameScene extends Phaser.Scene{
       
 
 
-        char1_skill1.on("pointerdown", () => {            
+        char1.on("pointerdown", () => {
+            this.socket.emit("getFromDataBase", char1.stats)
+        })
+
+
+
+        char1_skill1.on("pointerdown", () => { 
+                   
             this.socket.emit("clickSkill",char1_skill1.skill)
             console.log(char1_skill1.skill)
         })
@@ -300,7 +307,9 @@ export class GameScene extends Phaser.Scene{
             }
         })     
 
-
+        this.socket.on("gotData", function(character){
+            console.log(character)
+        })
 
         this.socket.on("use", function(skill, character) {
             //This is when the player wants to use a skill

@@ -3,6 +3,11 @@ const router = express.Router();
 const User = require('../models/User') 
 const app = express();
 const{ authUser, authRole } = require('../config/auth')
+const mongoose = require("mongoose")
+const Characters = require('../models/Characters')
+const db = mongoose.connection
+db.on('error', error=> console.error(error))
+db.once('open', error=> console.log('connected at users.js'))
 
 const http = require('http').createServer(express)
 const io = require('socket.io')(http);
@@ -67,6 +72,12 @@ io.on('connection', function (socket){
         }
     })
 
+    socket.on("getFromDataBase", function(char){
+        Characters.findOne({char_name : char.name})
+        .then(character =>{  
+            socket.emit("gotData",character);
+        })  
+    })
 
 
 })

@@ -7,6 +7,7 @@ class Character extends Phaser.GameObjects.Sprite{
         scene.sys.displayList.add(this);
 
         this.stats = {
+            name: "SHIRO, THE HEAVEN BLADE",
             health: 100,
             energy: 5,
         }

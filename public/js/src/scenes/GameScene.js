@@ -2,7 +2,6 @@ import {CST} from "/js/src/scenes/CST.js"
 
 //CLIENT SIDE 
 
-
 export class GameScene extends Phaser.Scene{
     constructor(){
         super({

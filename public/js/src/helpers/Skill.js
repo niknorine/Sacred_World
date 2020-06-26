@@ -1,7 +1,7 @@
 class Skill extends Phaser.GameObjects.Sprite{
-    constructor(scene,x,y, picture, name){
+    constructor(scene,x,y, picture, name, character){
    
-        super(scene, x, y, picture)
+        super(scene, x, y, picture, name, character)
         
         scene.sys.updateList.add(this);
         scene.sys.displayList.add(this);
@@ -9,11 +9,12 @@ class Skill extends Phaser.GameObjects.Sprite{
 
         this.info = {
             name: name,
-            character: "shiro"
+            
         }    
 
         this.skill = {
             name: name,
+            character: character,
             image: "mirage_step",
             currentCoolDown: 0,
             coolDownDuration: 2,

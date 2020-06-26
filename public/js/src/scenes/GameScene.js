@@ -37,6 +37,7 @@ export class GameScene extends Phaser.Scene{
         let character1Skills = [];
         let character2Skills = [];
         let character3Skills = [];
+        let allSkills = []
 
         let char1_skills_used = false;
         let char2_skills_used = false;
@@ -44,6 +45,8 @@ export class GameScene extends Phaser.Scene{
         let randomSelect = undefined;
 
         let char1_cooldowns = [];
+        let char2_cooldowns = [];
+        let char3_cooldowns = [];
        
         //background. dont know why i named it test
         let test =  this.add.image(0,0,"background").setOrigin(0).setDepth(0).setInteractive().setDepth(1);
@@ -59,11 +62,11 @@ export class GameScene extends Phaser.Scene{
         }
 
         // Declaring the characters. isPlayerA will be (char1, char2, char3) and the other player will be (char4, char5, char6)
-        // We should probably move this to the server side, as in, we pass the data of the character from the server.disabled
-        // I hard coded it for now for easier testing.disabled
-        var char1 = new Character(this, 0,0, "shiro").setScale(0.05, 0.05).setDepth(100).setVisible(false) 
-        var char2 = new Character(this, 0,0, "elf").setScale(0.05, 0.05).setDepth(100).setVisible(false)       
-        var char3 = new Character(this, 0,0, "ren").setScale(0.05, 0.05).setDepth(100).setVisible(false)   
+        // We should probably move this to the server side, as in, we pass the data of the character from the server
+        // I hard coded it for now for easier testing
+        var char1 = new Character(this, 0,0, "shiro", 1).setScale(0.05, 0.05).setDepth(100).setVisible(false) 
+        var char2 = new Character(this, 0,0, "elf", 2).setScale(0.05, 0.05).setDepth(100).setVisible(false)       
+        var char3 = new Character(this, 0,0, "ren", 3).setScale(0.05, 0.05).setDepth(100).setVisible(false)   
         
         //Health. The value of this is set further down
         var char1_health = this.add.text(0, 0, '', { font: '"Press Start 2P"' }).setDepth(101).setVisible(false) 
@@ -73,9 +76,9 @@ export class GameScene extends Phaser.Scene{
         charactersHeath.push(char1_health, char2_health, char3_health) 
 
         // Characters for the player that is not isPlayerA
-        var char4 = new Character(this, 0,0, "girl").setScale(0.05, 0.05).setDepth(100).setVisible(false)         
-        var char5 = new Character(this, 0,0, "girl").setScale(0.05, 0.05).setDepth(100).setVisible(false)       
-        var char6 = new Character(this, 0,0, "girl").setScale(1, 1).setDepth(100).setVisible(false)
+        var char4 = new Character(this, 0,0, "girl", 4).setScale(0.05, 0.05).setDepth(100).setVisible(false)         
+        var char5 = new Character(this, 0,0, "girl", 5).setScale(0.05, 0.05).setDepth(100).setVisible(false)       
+        var char6 = new Character(this, 0,0, "girl", 6).setScale(1, 1).setDepth(100).setVisible(false)
         //health for player 2
         var char4_health = this.add.text(0, 0, 'Hello World', { font: '"Press Start 2P"' }).setDepth(101).setVisible(false) ;
         var char5_health = this.add.text(0, 0, 'Hello World', { font: '"Press Start 2P"' }).setDepth(101).setVisible(false) ;
@@ -83,22 +86,34 @@ export class GameScene extends Phaser.Scene{
         
         //These are the skills for the first character. tbh i dont know the best way to declare them. Maybe we can have JSON for each character with their skills
         // and then declare them like (let char1_skill1 = new Skill(this,0,0, char1.skill.json))
-        let char1_skill1 = new Skill(this,0,0, char1.skill.image, "Mirage Step").setDepth(102).setScale(0.03,0.03).setInteractive();
-        let char1_skill2 = new Skill(this,0,0, "skill1", "Something Else").setDepth(102).setScale(0.03,0.03).setInteractive();
-        let char1_skill3 = new StanceOfDeath(this,0,0, "skill2", "STANCE OF DEATH").setDepth(102).setScale(0.03,0.03).setInteractive();
+        
+        let char1_skill1 = new Skill(this,0,0, char1.skill.image, "Mirage Step", char1.stats.name).setDepth(102).setScale(0.03,0.03).setInteractive();
+        let char1_skill2 = new Skill(this,0,0, "skill1", "Something Else", char1.stats.name).setDepth(102).setScale(0.03,0.03).setInteractive();
+        let char1_skill3 = new Skill(this,0,0, "skill2", "STANCE OF DEATH", char1.stats.name).setDepth(102).setScale(0.03,0.03).setInteractive();
 
+        
         let char1_skill1_cooldown = this.add.text(0, 0, 'Hello World', { font: '"Press Start 2P"' }).setDepth(101).setVisible(false) ;
         let char1_skill2_cooldown = this.add.text(0, 0, 'Hello World', { font: '"Press Start 2P"' }).setDepth(101).setVisible(false) ;
         let char1_skill3_cooldown = this.add.text(0, 0, 'Hello World', { font: '"Press Start 2P"' }).setDepth(101).setVisible(false) ;
         char1_cooldowns.push(char1_skill1_cooldown, char1_skill2_cooldown, char1_skill3_cooldown)
 
-        let char2_skill1 = new Skill(this,0,0, char1.skill.image, "Mirage Step").setDepth(102).setScale(0.03,0.03).setInteractive();
-        let char2_skill2 = new Skill(this,0,0, "skill1", "Something Else").setDepth(102).setScale(0.03,0.03).setInteractive();
-        let char2_skill3 = new StanceOfDeath(this,0,0, "skill2", "STANCE OF DEATH").setDepth(102).setScale(0.03,0.03).setInteractive();
+        let char2_skill1 = new Skill(this,0,0, char1.skill.image, "Mirage Step", char2.stats.name).setDepth(102).setScale(0.03,0.03).setInteractive();
+        let char2_skill2 = new Skill(this,0,0, "skill1", "Something Else", char2.stats.name).setDepth(102).setScale(0.03,0.03).setInteractive();
+        let char2_skill3 = new StanceOfDeath(this,0,0, "skill2", "STANCE OF DEATH", char2.stats.name).setDepth(102).setScale(0.03,0.03).setInteractive();
 
-        let char3_skill1 = new Skill(this,0,0, char1.skill.image, "Mirage Step").setDepth(102).setScale(0.03,0.03).setInteractive();
-        let char3_skill2 = new Skill(this,0,0, "skill1", "Something Else").setDepth(102).setScale(0.03,0.03).setInteractive();
-        let char3_skill3 = new StanceOfDeath(this,0,0, "skill2", "STANCE OF DEATH").setDepth(102).setScale(0.03,0.03).setInteractive();
+        let char2_skill1_cooldown = this.add.text(0, 0, 'Hello World', { font: '"Press Start 2P"' }).setDepth(101).setVisible(false) ;
+        let char2_skill2_cooldown = this.add.text(0, 0, 'Hello World', { font: '"Press Start 2P"' }).setDepth(101).setVisible(false) ;
+        let char2_skill3_cooldown = this.add.text(0, 0, 'Hello World', { font: '"Press Start 2P"' }).setDepth(101).setVisible(false) ;
+        char2_cooldowns.push(char2_skill1_cooldown, char2_skill2_cooldown, char2_skill3_cooldown)
+
+        let char3_skill1 = new Skill(this,0,0, char1.skill.image, "Mirage Step", char3.stats.name).setDepth(102).setScale(0.03,0.03).setInteractive();
+        let char3_skill2 = new Skill(this,0,0, "skill1", "Something Else", char3.stats.name).setDepth(102).setScale(0.03,0.03).setInteractive();
+        let char3_skill3 = new StanceOfDeath(this,0,0, "skill2", "STANCE OF DEATH", char3.stats.name).setDepth(102).setScale(0.03,0.03).setInteractive();
+
+        let char3_skill1_cooldown = this.add.text(0, 0, 'Hello World', { font: '"Press Start 2P"' }).setDepth(101).setVisible(false) ;
+        let char3_skill2_cooldown = this.add.text(0, 0, 'Hello World', { font: '"Press Start 2P"' }).setDepth(101).setVisible(false) ;
+        let char3_skill3_cooldown = this.add.text(0, 0, 'Hello World', { font: '"Press Start 2P"' }).setDepth(101).setVisible(false) ;
+        char3_cooldowns.push(char3_skill1_cooldown, char3_skill2_cooldown, char3_skill3_cooldown)
 
         //The energy text. We will change this from text to some ui. This is for testing purposes.
         var testtext = this.add.text(0, 0, 'skill info', { font: '"Press Start 2P"' }).setDepth(101).setVisible(true) ;
@@ -130,6 +145,7 @@ export class GameScene extends Phaser.Scene{
                     character1Skills.push(char1_skill1, char1_skill2, char1_skill3);
                     character2Skills.push(char2_skill1, char2_skill2, char2_skill3);
                     character3Skills.push(char3_skill1, char3_skill2, char3_skill3);
+                    allSkills.push(char1_skill1, char1_skill2, char1_skill3,char2_skill1, char2_skill2, char2_skill3,char3_skill1, char3_skill2, char3_skill3)
                     // We declare the opponents characters
                     OpponentCharacter.push(char4,char5,char6)
                 }else{
@@ -143,13 +159,17 @@ export class GameScene extends Phaser.Scene{
                     }
                 }
                 
-                //This is to position and modify the different arrays we created.disabled
+                //This is to position and modify the different arrays we created
 
                 for(let i = 0; i < characters.length; i++){
                     
                     characters[i].setOrigin(-1, -2 * [i]).setInteractive().setVisible(true)
+                    
                     charactersHeath[i].setVisible(true).setOrigin(-1.6, -9 * [i]).setText("Health: " + characters[i].stats.health).setColor("#FA4D57").setFontSize("20px").setStroke("#000000", 4)
                     char1_cooldowns[i].setVisible(true).setOrigin((i + 2) * -1.7 ,-2.6).setText("CD: " + character1Skills[i].skill.currentCoolDown).setColor("#FA4D57").setFontSize("20px").setStroke("#000000", 4)
+                    char2_cooldowns[i].setVisible(true).setOrigin((i + 2) * -1.7 ,-12.0).setText("CD: " + character2Skills[i].skill.currentCoolDown).setColor("#FA4D57").setFontSize("20px").setStroke("#000000", 4)
+                    char3_cooldowns[i].setVisible(true).setOrigin((i + 2) * -1.7 ,-20).setText("CD: " + character3Skills[i].skill.currentCoolDown).setColor("#FA4D57").setFontSize("20px").setStroke("#000000", 4)
+                    
                 }
                 for(let i = 0; i < OpponentCharacter.length; i++){
                     OpponentCharacter[i].setOrigin(-10, -3 * [i]) .setInteractive().setVisible(true)       
@@ -163,7 +183,7 @@ export class GameScene extends Phaser.Scene{
                 
                 //Don't know why im writing this here, but we probably want to create a JSON object server side for each player. We can import data from the database and shit aswell.
                 
-                //random energy. We should move this to server side. We also need to change this so that it actually does it correctly.disabled
+                //random energy. We should move this to server side. We also need to change this so that it actually does it correctly
                 //atm it's here for testing purposes
                 Object.keys(Energy).forEach(en =>{
                     Energy[en] = Math.floor(Math.random() * 6);                
@@ -240,9 +260,11 @@ export class GameScene extends Phaser.Scene{
 
 
         //ONCE THE PLAYER SELECTS A SKILL
-        this.socket.on('selectSkill', function(data, skill){   
-            console.log(skill.currentCoolDown)          
-            if(this.isPlayerA == true && data == "player1" && char1_skills_used === false){  
+        this.socket.on('selectSkill', function(data, skill, character){  
+            //console.log(skill.currentCoolDown)      
+            console.log(character.skillUsed)
+
+            if(this.isPlayerA == true && data == "player1" && character.skillUsed === false){  
 
                 //Check if the skill has a cool down
                 if(skill.currentCoolDown === 0){
@@ -252,30 +274,18 @@ export class GameScene extends Phaser.Scene{
                         OpponentCharacter.forEach(char => {
                             //We change the enemy characters to normal
                             
-                            character1Skills.forEach(skills => {                    
-                                if(JSON.stringify(skills.skill) == JSON.stringify(skill)){                        
-                                    skills.clearTint();     
-                                }
-                            })
-
-                            char.clearTint()
+                            clearAllVisuals()
                             char.setInteractive(false)
                             selectedSkill = undefined;
                         }) 
                     }else{
                         //This means we can make the selected skill something else, as its not already selected, or there is no selected skill
+                            
                             selectedSkill = skill;  
-
                             //we want to loop through each skill to remove the visuals
-                            character1Skills.forEach(skills => {  
-                            //we clear all the tints
-                            skills.clearTint();                  
-                            if(JSON.stringify(skills.skill) == JSON.stringify(skill)){ 
-                                //Then we find the actual skill they want to use                                
-                                skills.tint = 100 * 0xffffff; 
-                                return;  
-                            }
-                        })
+                            clearAllVisuals();
+                            
+                            updateOnSkillClick(selectedSkill, character, false)
 
                         //as we are selecting a skill to be used, we want to change the visuals for the enemy that we can attack
                         OpponentCharacter.forEach(char => {
@@ -309,46 +319,46 @@ export class GameScene extends Phaser.Scene{
 
         char1_skill1.on("pointerdown", () => { 
                    
-            this.socket.emit("clickSkill",char1_skill1.skill, char1)
+            this.socket.emit("clickSkill",char1_skill1.skill, char1.stats)
             console.log(char1_skill1.skill)
         })
 
         char1_skill2.on("pointerdown", () => {
-            this.socket.emit("clickSkill",char1_skill2.skill, char1)
+            this.socket.emit("clickSkill",char1_skill2.skill, char1.stats)
         })
 
         char1_skill3.on("pointerdown", () => {
-            this.socket.emit("clickSkill",char1_skill3.skill, char1)
+            this.socket.emit("clickSkill",char1_skill3.skill, char1.stats)
         })     
 
         
         char2_skill1.on("pointerdown", () => { 
                    
-            this.socket.emit("clickSkill",char2_skill1.skill, char2)
+            this.socket.emit("clickSkill",char2_skill1.skill, char2.stats)
             console.log(char2_skill1.skill)
         })
 
         char2_skill2.on("pointerdown", () => {
-            this.socket.emit("clickSkill",char2_skill2.skill, char2)
+            this.socket.emit("clickSkill",char2_skill2.skill, char2.stats)
         })
 
         char2_skill3.on("pointerdown", () => {
-            this.socket.emit("clickSkill",char2_skill3.skill, char2)
+            this.socket.emit("clickSkill",char2_skill3.skill, char2.stats)
         })  
 
         
         char3_skill1.on("pointerdown", () => { 
                    
-            this.socket.emit("clickSkill",char3_skill1.skill, char3)
+            this.socket.emit("clickSkill",char3_skill1.skill, char3.stats)
             console.log(char3_skill1.skill)
         })
 
         char3_skill2.on("pointerdown", () => {
-            this.socket.emit("clickSkill",char3_skill2.skill, char3)
+            this.socket.emit("clickSkill",char3_skill2.skill, char3.stats)
         })
 
         char3_skill3.on("pointerdown", () => {
-            this.socket.emit("clickSkill",char3_skill3.skill, char3)
+            this.socket.emit("clickSkill",char3_skill3.skill, char3.stats)
         })  
 
         char4.on('pointerup', () => {    
@@ -384,8 +394,8 @@ export class GameScene extends Phaser.Scene{
         })
 
 
-        this.socket.on("use", function(skill, character) {
-            useSkill(skill, character)
+        this.socket.on("use", function(skill, character, characterSkill) {
+            useSkill(skill, character, characterSkill)
             
         })  
 
@@ -457,7 +467,7 @@ export class GameScene extends Phaser.Scene{
 
                     if(haveEnergy){
                         console.log("you used "+ JSON.stringify(skill) + " on "+ JSON.stringify(character))
-
+                        clearAllVisuals();
 
                         Object.keys(energyObj).forEach(energy => {
                             Energy[energy] -= energyObj[energy];
@@ -470,10 +480,18 @@ export class GameScene extends Phaser.Scene{
                             Energy["physical"] -= randomAmount;
                             updateEnergy();
                         }
-
+                        
+                        Object.keys(characters).forEach(char => {
+                            
+                            if(selectedSkill.character === characters[char].stats.name){
+                                characters[char].stats.skillUsed = true;
+                                console.log(characters[char].stats.skillUsed)
+                                //console.log(characters.skillUsed)
+                            }
+                        })
                         
 
-                        character1Skills.forEach(skills => {
+                        allSkills.forEach(skills => {
 
                             //loop through the skill so we can find the variable holding our skill we want to use                    
                             if(JSON.stringify(skills.skill) == JSON.stringify(skill)){  
@@ -484,16 +502,21 @@ export class GameScene extends Phaser.Scene{
                                 //remove visuals
                                 skills.clearTint();
                                 //now we say that that character has used a skill this turn already
-                                char1_skills_used = true;
+                               
+                                
+                                
+                                
                                 //loop through the enemies so we can remove the visuals
                                 OpponentCharacter.forEach(char => {
                                     char.setInteractive(true)
                                     char.clearTint(); 
-                                    for(let i = 0; i < characters.length; i++){
-                                        char1_cooldowns[i].setText("CD: " + character1Skills[i].skill.currentCoolDown)
-                                    }                        
-                                })
+                                    // for(let i = 0; i < characters.length; i++){                                        
+                                    //     char1_cooldowns[i].setText("CD: " + character1Skills[i].skill.currentCoolDown)
 
+                                    // }    
+                                                      
+                                })
+                                setCoolDownText()  
                             }
                         });
                     }
@@ -507,6 +530,67 @@ export class GameScene extends Phaser.Scene{
             }else{
                 console.log("you have a cooldown on this skill")
             }
+        }
+
+        function clearAllVisuals(){
+            allSkills.forEach(skill => {
+                skill.clearTint()   
+            })
+            OpponentCharacter.forEach(char =>{
+                char.clearTint()   
+            })
+            
+        }
+
+        function updateOnSkillClick(skill, character, clear){
+            if(clear){
+                //remove tint
+
+            }
+            if(!clear){
+                switch(character.charNumber){
+                    case 1:
+                        character1Skills.forEach(skills => {  
+                            //we clear all the tints                                             
+                            if(JSON.stringify(skills.skill) == JSON.stringify(skill)){ 
+                                //Then we find the actual skill they want to use                                
+                                skills.tint = 100 * 0xffffff; 
+                                return;  
+                            }
+                        })
+                        break;
+                    case 2:
+                        character2Skills.forEach(skills => {  
+                            //we clear all the tints                            
+                            if(JSON.stringify(skills.skill) == JSON.stringify(skill)){ 
+                                //Then we find the actual skill they want to use                                
+                                skills.tint = 100 * 0xffffff; 
+                                return;  
+                            }
+                        })
+                        break;
+                    case 3:
+                        character3Skills.forEach(skills => {  
+                            //we clear all the tints                                             
+                            if(JSON.stringify(skills.skill) == JSON.stringify(skill)){ 
+                                //Then we find the actual skill they want to use                                
+                                skills.tint = 100 * 0xffffff; 
+                                return;  
+                            }
+                        })
+                        break;
+                    
+                }
+
+            }
+        }
+
+        function setCoolDownText(){
+            for(let i = 0; i < characters.length; i++){                                        
+                char1_cooldowns[i].setText("CD: " + character1Skills[i].skill.currentCoolDown)
+                char2_cooldowns[i].setText("CD: " + character2Skills[i].skill.currentCoolDown)
+                char3_cooldowns[i].setText("CD: " + character3Skills[i].skill.currentCoolDown)
+            }  
         }
 
     }  

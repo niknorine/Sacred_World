@@ -27,6 +27,14 @@ let whosTurn = "player1"
 io.on('connection', function (socket){
     console.log('A user connected ' + socket.id);
 
+    Characters.find()
+    .then(character =>{  
+        socket.emit("ShowCharacters", character);
+        
+    })  
+
+   
+
     socket.on('disconnect', function(){
         console.log('User disconnect ' + socket.id)
         players = players.filter(player => player !== socket.id)
@@ -56,18 +64,18 @@ io.on('connection', function (socket){
 
     
 
-    socket.on("clickSkill", function(skill) {  
-        console.log(skill)
+    socket.on("clickSkill", function(skill, character) {  
+        console.log(character)
         if(whosTurn == "player1"){
-            io.to(player1).emit("selectSkill", whosTurn, skill)
+            io.to(player1).emit("selectSkill", whosTurn, skill, character)
             //io.emit("useSkill", whosTurn)
         }      
         
     })
 
-    socket.on("use", function(skill, characterToUseOn){
+    socket.on("use", function(skill, characterToUseOn, characterWhoUsed){
         if(whosTurn == "player1"){
-            io.to(player1).emit("use", skill, characterToUseOn)
+            io.to(player1).emit("use", skill, characterToUseOn, characterWhoUsed)
             console.log(JSON.stringify(skill))
         }
     })

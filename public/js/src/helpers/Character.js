@@ -1,15 +1,17 @@
 class Character extends Phaser.GameObjects.Sprite{
-    constructor(scene, x, y, name){
+    constructor(scene, x, y, name, charNumber){
         var x = 0;
         var y = 0;        
-        super(scene, x, y, name)
+        super(scene, x, y, name, charNumber)
         scene.sys.updateList.add(this);
         scene.sys.displayList.add(this);
 
         this.stats = {
-            name: "SHIRO, THE HEAVEN BLADE",
+            name: name,
             health: 100,
             energy: 5,
+            skillUsed: false,
+            charNumber: charNumber,
         }
 
         this.skill = {

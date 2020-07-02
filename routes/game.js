@@ -40,6 +40,14 @@ io.on('connection', function (socket){
         players = players.filter(player => player !== socket.id)
     })
 
+    socket.on("endTurn", function(skillsUsed){
+        if(whosTurn === "player1"){
+            whosTurn = "player2"
+        }else{
+            whosTurn = "player1"
+        }
+        io.emit("nextTurn", whosTurn, skillsUsed)
+    })
     
     players.push(socket.id);
     let player1 = [players[0]];
@@ -64,20 +72,15 @@ io.on('connection', function (socket){
 
     
 
-    socket.on("clickSkill", function(skill, character) {  
-        console.log(character)
-        if(whosTurn == "player1"){
-            io.to(player1).emit("selectSkill", whosTurn, skill, character)
-            //io.emit("useSkill", whosTurn)
-        }      
-        
+    socket.on("clickSkill", function(skill, character) {          
+        socket.emit("selectSkill", whosTurn, skill, character)
     })
 
-    socket.on("use", function(skill, characterToUseOn, characterWhoUsed){
-        if(whosTurn == "player1"){
-            io.to(player1).emit("use", skill, characterToUseOn, characterWhoUsed)
+    socket.on("use", function(skill, characterToUseOn){
+        
+            socket.emit("use", skill, characterToUseOn)
             console.log(JSON.stringify(skill))
-        }
+        
     })
 
     socket.on("getFromDataBase", function(char){
@@ -86,6 +89,22 @@ io.on('connection', function (socket){
             socket.emit("gotData",character);
         })  
     })
+
+    socket.on("calculateDamage", function(skill, effect){
+        io.emit("returnCalculated", calculateDamage(skill, effect))
+    })
+
+    function calculateDamage(effect, characterToUseOn){
+        console.log(JSON.stringify("Used " + effect.name+ " on "+ characterToUseOn.charNumber))       
+
+        //This is where we should calculate the damage and shit
+        // We should probably add a check for damage reduction but i cba atm
+
+        return {
+            damage: effect.effect.damage,
+            charToUseOn: characterToUseOn.charNumber
+        }
+    }
 
 
 })

@@ -1,0 +1,35 @@
+{
+    
+
+    "name": "Serrated Wind Slash",          
+    "image": "serrated_wind_slash",
+    "character": "kyros",
+    "selfEffect": false,
+    "currentCoolDown": 0,
+    "coolDownDuration": 0,
+    "duration": 1,
+
+    "cost": {
+        "physical": 1,
+        "magic": 0,
+        "strategy": 0,
+        "agility": 0,
+        "unique": 0,
+        "support": 0
+    },
+
+    "effect":{
+        "damage": 15,
+        "damage_reduction": 0,
+        "next_skill_reduction": "physical",
+        "next_skill_reduction_ammount": 1,
+        "lingering_damage": 0,
+        "stun": true,
+        "stun_amount": 1,
+        "bypassInvulnerability": true,
+        "effectedBy": "Silent Dagger",
+        "effectedByDamage": 10,
+        "rangedInvulnerable": true,
+        "rangedInvulnerableWhen": 2
+    }
+}

@@ -12,12 +12,20 @@ class Character extends Phaser.GameObjects.Sprite{
             energy: 5,
             skillUsed: false,
             charNumber: charNumber,
+            effect: [
+                {effect1: undefined},
+                {effect2: undefined},
+                {effect3: undefined},
+                {effect4: undefined},
+            ]
         }
 
         this.skill = {
             name: "Mirage Step",
             image: "mirage_step",            
         }
+
+ 
     }
 
     

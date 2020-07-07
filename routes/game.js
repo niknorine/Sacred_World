@@ -79,8 +79,12 @@ io.on('connection', function (socket){
     socket.on("use", function(skill, characterToUseOn){
         
             socket.emit("use", skill, characterToUseOn)
-            console.log(JSON.stringify(skill))
+            
         
+    })
+
+    socket.on("getEnemyTurn", function(effectArray){
+        socket.broadcast.emit("sendEffectData", effectArray) 
     })
 
     socket.on("getFromDataBase", function(char){
@@ -95,8 +99,10 @@ io.on('connection', function (socket){
     })
 
     function calculateDamage(effect, characterToUseOn){
-        console.log(JSON.stringify("Used " + effect.name+ " on "+ characterToUseOn.charNumber))       
-
+        console.log("test 123" + JSON.stringify(characterToUseOn))
+        console.log(JSON.stringify("Used " + effect.name+ " on "+ characterToUseOn.charNumber))     
+        
+        
         //This is where we should calculate the damage and shit
         // We should probably add a check for damage reduction but i cba atm
 

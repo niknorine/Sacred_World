@@ -55,7 +55,7 @@ export class GameScene extends Phaser.Scene{
         let char5effects = []
         let char6effects = []
         
-
+        let enemyUsedSkillsLastRound = [];
         let usedSkillsThisRound = [];
 
         let char1_skills_used = false;
@@ -116,14 +116,14 @@ export class GameScene extends Phaser.Scene{
         
 
         //Health. The value of this is set further down
-        var char1_health = this.add.text(0, 0, '', { font: '"Press Start 2P"', align: 'left'}).setDepth(101).setVisible(false) 
-        var char2_health = this.add.text(0, 0, '', { font: '"Press Start 2P"', align: 'left' }).setDepth(101).setVisible(false) ;
-        var char3_health = this.add.text(0, 0, '', { font: '"Press Start 2P"', align: 'left' }).setDepth(101).setVisible(false) ;
+        var char1_health = this.add.text(0, 0, '', { font: '"Press Start 2P"'}).setDepth(101).setVisible(false) 
+        var char2_health = this.add.text(0, 0, '', { font: '"Press Start 2P"'}).setDepth(101).setVisible(false) ;
+        var char3_health = this.add.text(0, 0, '', { font: '"Press Start 2P"'}).setDepth(101).setVisible(false)
         
 
-        var char4_health = this.add.text(0, 0, '', { font: '"Press Start 2P"', align: 'left' }).setDepth(101).setVisible(false) 
-        var char5_health = this.add.text(0, 0, '', { font: '"Press Start 2P"', align: 'left' }).setDepth(101).setVisible(false) ;
-        var char6_health = this.add.text(0, 0, '', { font: '"Press Start 2P"', align: 'left' }).setDepth(101).setVisible(false) ;//We put the health in an array for positioning reasons easier to for loop to position them.
+        var char4_health = this.add.text(0, 0, '', { font: '"Press Start 2P"'}).setDepth(101).setVisible(false) 
+        var char5_health = this.add.text(0, 0, '', { font: '"Press Start 2P"'}).setDepth(101).setVisible(false) ;
+        var char6_health = this.add.text(0, 0, '', { font: '"Press Start 2P"'}).setDepth(101).setVisible(false) ;//We put the health in an array for positioning reasons easier to for loop to position them.
         
         
 
@@ -132,9 +132,7 @@ export class GameScene extends Phaser.Scene{
         var char5 = new Character(this, 0,0, "elf", 5).setScale(0.05, 0.05).setDepth(100).setVisible(false)       
         var char6 = new Character(this, 0,0, "elf", 6).setScale(0.05, 0.05).setDepth(100).setVisible(false)
         //health for player 2
-        var char4_health = this.add.text(0, 0, 'Hello World', { font: '"Press Start 2P"' }).setDepth(101).setVisible(false) ;
-        var char5_health = this.add.text(0, 0, 'Hello World', { font: '"Press Start 2P"' }).setDepth(101).setVisible(false) ;
-        var char6_health = this.add.text(0, 0, 'Hello World', { font: '"Press Start 2P"' }).setDepth(101).setVisible(false) ;
+
         
         //These are the skills for the first character. tbh i dont know the best way to declare them. Maybe we can have JSON for each character with their skills
         // and then declare them like (let char1_skill1 = new Skill(this,0,0, char1.skill.json))
@@ -216,7 +214,7 @@ export class GameScene extends Phaser.Scene{
                     endTurnText.setVisible(true);
                     // Because we made char1,char2,char3 playerA characters, we push them into a characters array.
                     characters.push(char1, char2, char3);
-                    console.log(char1_skill1)
+                    console.log(char1_skill1)                    
                     OpponentCharacter.push(char4,char5,char6)
                     charactersHeath.push(char1_health, char2_health, char3_health) 
                     opponentsHealth.push(char4_health, char5_health, char6_health)
@@ -226,16 +224,16 @@ export class GameScene extends Phaser.Scene{
                     character3Skills.push(char3_skill1, char3_skill2, char3_skill3, char3_skill4);
                     allSkills.push(char1_skill1, char1_skill2, char1_skill3, char1_skill4 ,char2_skill1, char2_skill2, char2_skill3, char2_skill4, char3_skill1, char3_skill2, char3_skill3, char3_skill4)
                     // We declare the opponents characters
-                    
+                    char1effects.push(char1Effect1, char1Effect2, char1Effect3)
+                    char2effects.push(char2Effect1, char2Effect2, char2Effect3)
+                    char3effects.push(char3Effect1, char3Effect2, char3Effect3)
+
+                    char4effects.push(char4Effect1, char4Effect2, char4Effect3)
+                    char5effects.push(char5Effect1, char5Effect2, char5Effect3)
+                    char6effects.push(char6Effect1, char6Effect2, char6Effect3)
                     for(let i = 0; i < characters.length; i++){
                         characters[i].disableInteractive()
-                        char1effects.push(char1Effect1, char1Effect2, char1Effect3)
-                        char2effects.push(char2Effect1, char2Effect2, char2Effect3)
-                        char3effects.push(char3Effect1, char3Effect2, char3Effect3)
-
-                        char4effects.push(char4Effect1, char4Effect2, char4Effect3)
-                        char5effects.push(char5Effect1, char5Effect2, char5Effect3)
-                        char6effects.push(char6Effect1, char6Effect2, char6Effect3)
+ 
 
                         char1effects[i].setOrigin((i + 2) * -1.5 ,-3.5)
                         char2effects[i].setOrigin((i + 2) * -1.5 ,-10.5)
@@ -264,14 +262,15 @@ export class GameScene extends Phaser.Scene{
                     characters.push(char4,char5,char6)
                     opponentsHealth.push(char1_health, char2_health, char3_health) 
                     charactersHeath.push(char4_health, char5_health, char6_health)
+                    char1effects.push(char1Effect3,char1Effect2, char1Effect1)
+                    char2effects.push(char2Effect1, char2Effect2, char2Effect3)
+                    char3effects.push(char3Effect1, char3Effect2, char3Effect3)
+                    char4effects.push(char4Effect1, char4Effect2, char4Effect3)
+                    char5effects.push(char5Effect1, char5Effect2, char5Effect3)
+                    char6effects.push(char6Effect1, char6Effect2, char6Effect3)
                     for(let i = 0; i < characters.length; i++){
                         characters[i].disableInteractive()
-                        char1effects.push(char1Effect3,char1Effect2, char1Effect1)
-                        char2effects.push(char2Effect1, char2Effect2, char2Effect3)
-                        char3effects.push(char3Effect1, char3Effect2, char3Effect3)
-                        char4effects.push(char4Effect1, char4Effect2, char4Effect3)
-                        char5effects.push(char5Effect1, char5Effect2, char5Effect3)
-                        char6effects.push(char6Effect1, char6Effect2, char6Effect3)
+
 
                         char1effects[i].setOrigin((i + 15) * -2.2 ,-4)
                         char2effects[i].setOrigin((i + 15) * -2.2 ,-10)
@@ -301,8 +300,8 @@ export class GameScene extends Phaser.Scene{
                     
                     characters[i].setOrigin(-1, -2 * [i]).setVisible(true)
                     OpponentCharacter[i].setOrigin(-10, -2 * [i]) .setInteractive().setVisible(true).setFlipX(true)
-                    charactersHeath[i].setVisible(true).setOrigin(-1.6, -9 * [i]).setText("Health: " + characters[i].stats.health).setColor("#FA4D57").setFontSize("20px").setStroke("#000000", 4)
-                    opponentsHealth[i].setVisible(true).setOrigin(-6.0, -9 * [i]).setText("Health: " + characters[i].stats.health).setColor("#FA4D57").setFontSize("20px").setStroke("#000000", 4)
+                    charactersHeath[i].setVisible(true).setOrigin(-1.6, -9 * [i]).setText("Health: " + characters[i].stats.health).setColor("#FA4D57").setFontSize("20px").setStroke("#000000", 4).setFixedSize(142, i + 20)
+                    opponentsHealth[i].setVisible(true).setOrigin(-6.0, -9 * [i]).setText("Health: " + characters[i].stats.health).setColor("#FA4D57").setFontSize("20px").setStroke("#000000", 4).setFixedSize(142, i + 20)
                     //char3_cooldowns[i].setVisible(true).setOrigin((i + 2) * -1.7 ,-20).setText("CD: " + character3Skills[i].skill.currentCoolDown).setColor("#FA4D57").setFontSize("20px").setStroke("#000000", 4)
                     
                 }
@@ -401,39 +400,35 @@ export class GameScene extends Phaser.Scene{
                 myTurn = true;
                 updatedDuration = false;
                 updateEffectDuration()
+                console.log(char4.stats.effect)
                 usedSkillsThisRound = []
-                console.log(skillsUsed)
-                if(skillsUsed.length > 0){
-                    updateEffects(skillsUsed);
-                }
+                enemyUsedSkillsLastRound = []
                 UpdateCoolDown()
                 randomizeAndUpdateEnergy()
                 updateHealthText()
             }
             if(data === "player2" && this.isPlayerA){
                 endTurnText.setVisible(false);
-                myTurn = false;
-                updateEffects(skillsUsed);
+                myTurn = false;    
+                scene.socket.emit("getEnemyTurn", usedSkillsThisRound);            
                 updateHealthText()                
                
             }
             if(data === "player1" && !this.isPlayerA){
                 endTurnText.setVisible(false);
-                myTurn = false;
-                updateEffects(skillsUsed);
+                myTurn = false;  
+                scene.socket.emit("getEnemyTurn", usedSkillsThisRound);             
                 updateHealthText()                
             }
             if(data === "player2" && !this.isPlayerA){
                 endTurnText.setVisible(true);
                 myTurn = true;  
+                console.log(char4.stats.effect)
                 updatedDuration = false;
                 updateEffectDuration()
                 usedSkillsThisRound = []
-                if(skillsUsed.length > 0){
-                    updateEffects(skillsUsed);
-                }
-                console.log(skillsUsed) 
-                UpdateCoolDown()
+                enemyUsedSkillsLastRound = []
+                UpdateCoolDown() 
                 randomizeAndUpdateEnergy()      
                 updateHealthText()      
             }
@@ -723,13 +718,24 @@ export class GameScene extends Phaser.Scene{
         })
 
 
-        this.socket.on("use", function(skill, character, characterSkill) {
-            useSkill(skill, character, characterSkill)
+        this.socket.on("use", (skill, character) => {
+            console.log("bb cock")
+            useSkill(skill, character)
+            this.socket.emit("sendEffectData", skill, character);
             
         })  
 
         this.socket.on("returnCalculated", function(info){
             doDamage(info)
+        })
+
+        this.socket.on("sendEffectData", function(effects){
+            Object.keys(effects).forEach(function(key){
+                
+                updateEffects(effects[key].skill, effects[key].character)
+                updateEffectVisuals(effects[key].skill, effects[key].character)
+            })
+            console.log(effects)
         })
 
         //We probably want to change this so it actually works how we want it to. atm it just generates random number between 0-5 for each energy type
@@ -822,7 +828,7 @@ export class GameScene extends Phaser.Scene{
                     if(haveEnergy){
                         usedSkillsThisRound.push({
                             skill: skill,
-                            character: character.charNumber
+                            character: character
                         })
 
                         let characterUsedOn = undefined
@@ -836,10 +842,12 @@ export class GameScene extends Phaser.Scene{
                         })
                         characterEffect = selectedSkill
                         
-
+                        updateEffectVisuals(skill, character)
                         scene.socket.emit("calculateDamage", characterEffect, character)
                         console.log("you used "+ JSON.stringify(skill) + " on "+ JSON.stringify(character))
+                        updateEffects(skill, character);
                         clearAllVisuals();
+                        
 
                         Object.keys(energyObj).forEach(energy => {
                             Energy[energy] -= energyObj[energy];
@@ -907,8 +915,6 @@ export class GameScene extends Phaser.Scene{
                 console.log("you have a cooldown on this skill")
             }
         }
-
-
 
         function clearAllVisuals(){
             
@@ -1004,178 +1010,192 @@ export class GameScene extends Phaser.Scene{
             setCoolDownText()
         }
         
-        function updateEffects(skillUsed){        
-            skillUsed.forEach(skill =>{
-                
-                if(skill.character === 1){
-                    let emptyEffect = -1;                  
-                    for(let i = 0; i < char1effects.length; i++){
-                        if(char1effects[i].info.used === false){                                                        
-                            emptyEffect = i;
-                            break;
-                        }
-                    }
-                    char1effects[emptyEffect].setTexture(skill.skill.image)
-                    char1effects[emptyEffect].setVisible(true)
-                    char1effects[emptyEffect].skill = skill.skill;
-                    char1.stats.effect[emptyEffect] = skill.skill.effect
-                    console.log("Effect " + JSON.stringify(char1.stats.effect[emptyEffect]))
-                   // console.log(char1effects[emptyEffect].skill)
-                    char1effects[emptyEffect].info.used = true;     
-                    
-                }else if(skill.character === 2){
-                    let emptyEffect = -1;                 
-                    for(let i = 0; i < char2effects.length; i++){
-                        if(char2effects[i].info.used === false){
-                            emptyEffect = i;
-                            break;
-                        }
-                    }
-                    char2effects[emptyEffect].setVisible(true)
-                    char2effects[emptyEffect].skill = skill.skill;
-                    char2effects[emptyEffect].setTexture(skill.skill.image)
-                    char2effects[emptyEffect].info.used = true;     
-                        
-                }else if(skill.character === 3){
-                    let emptyEffect = -1;                   
-                    for(let i = 0; i < char3effects.length; i++){
-                        if(char3effects[i].info.used === false){
-                            emptyEffect = i;
-                            break;
-                        }
-                    }
-                    char3effects[emptyEffect].setVisible(true)
-                    char3effects[emptyEffect].skill = skill.skill;
-                    char3effects[emptyEffect].setTexture(skill.skill.image)
-                    char3effects[emptyEffect].info.used = true;     
-                        
-                }else if(skill.character === 4){
-                    let emptyEffect = -1;                   
-                    for(let i = 0; i < char4effects.length; i++){
-                        if(char4effects[i].info.used === false){
-                            emptyEffect = i;
-                            break;
-                        }
-                    }
-                    
-                    char4effects[emptyEffect].setTexture(skill.skill.image)
-                    char4effects[emptyEffect].info.used = true;   
-                    char4effects[emptyEffect].setVisible(true)
-                    char4effects[emptyEffect].skill = skill.skill;  
-                        
-                }else if(skill.character === 5){
-                    let emptyEffect = -1;                   
-                    for(let i = 0; i < char5effects.length; i++){
-                        if(char5effects[i].info.used === false){
-                            emptyEffect = i;
-                            break;
-                        }
-                    }
-                    char5effects[emptyEffect].setVisible(true);
-                    char5effects[emptyEffect].skill = skill.skill;
-                    char5effects[emptyEffect].setTexture(skill.skill.image)
-                    char5effects[emptyEffect].info.used = true;     
-                        
-                }
-                else if(skill.character === 6){
-                    let emptyEffect = -1;                   
-                    for(let i = 0; i < char6effects.length; i++){
-                        if(char6effects[i].info.used === false){
-                            emptyEffect = i;
-                            break;
-                        }
-                    }
-                    char6effects[emptyEffect].setVisible(true)
-                    char6effects[emptyEffect].skill = skill.skill;
-                    char6effects[emptyEffect].setTexture(skill.skill.image)
-                    char6effects[emptyEffect].info.used = true;     
-                        
-                }
-                
-            })
+        function updateEffects(skill, character){                     
+            console.log("updating effects")
+            let charNum = character.charNumber;
+                   
             
+            let index = 0    
+            let finished = false;  
+            while(!finished){      
+                character.effect.forEach(effect => {  
+                console.log(effect)                    
+                    if(Object.keys(effect).length === 0){   
+                        console.log(charNum)               
+                        switch(charNum){
+                            case 1:
+                                char1.stats.effect[index] = skill
+                                finished = true;
+                                break;
+                            case 2:
+                                char2.stats.effect[index] = skill
+                                finished = true;
+                                break;
+                            case 3:
+                                char3.stats.effect[index] = skill
+                                finished = true;
+                                console.log(char3.stats.effect)
+                                break;
+                            case 4:
+                                char4.stats.effect[index] = skill
+                                console.log(char4.stats.effect)
+                                finished = true;
+                                break;
+                            case 5:
+                                char5.stats.effect[index] = skill
+                                finished = true;
+                                break;
+                            case 6:
+                                char6.stats.effect[index] = skill
+                                finished = true;
+                                break;
+                        }                    
+                    }else{
+                        index++
+                    }                                
+                })
+            }           
         }
 
         function updateEffectDuration(){
-            //WE NEED TO FIX THIS
-            if(!updatedDuration){
-                char1effects.forEach(effect => {
-
-                    if(effect.skill.duration !== 0){
-                        effect.skill.duration -= 1;
-                        return;
-                    }
-                    if(effect.skill.duration === 0){
-                        effect.setTexture(null);
-                        effect.setVisible(false)
-                        effect.skill.skill = {}
-                        effect.info.used = false;
-                    }
-                })
-
-                char2effects.forEach(effect => {
-                    if(effect.skill.duration !== 0){
-                        effect.skill.duration -= 1;
-                    }
-                    if(effect.skill.duration === 0){
-                        effect.setTexture(null);
-                        effect.setVisible(false)
-                        effect.skill = {}
-                        effect.info.used = false;
+            
+            characters.forEach(char => {                
+                char.stats.effect.forEach(effect =>{
+                    if(Object.values(effect)[0] !== undefined || effect[Object.keys(effect)] !== undefined || effect === undefined){
+                        effect.duration -= 1;
+                        console.log(effect.duration)
+                        if(char.stats.effect[0].duration === 0){
+                            char.stats.effect[0] = {}
+                            removeVisuals(effect, char)
+                        }
+                        if(char.stats.effect[1].duration === 0){
+                            char.stats.effect[1] = {}
+                            removeVisuals(effect, char)
+                        }
+                        if(char.stats.effect[2].duration === 0){
+                            char.stats.effect[2] = {}
+                            removeVisuals(effect, char)
+                        }
+                        if(char.stats.effect[3].duration === 0){
+                            char.stats.effect[3] = {}
+                            removeVisuals(effect, char)
+                        }                        
                     }
                 })
+            })
 
-                char3effects.forEach(effect => {
-                    console.log(effect.skill.duration)
-                    if(effect.skill.duration !== 0){
-                        effect.skill.duration -= 1;
-                        return;
-                    }
-                    if(effect.skill.duration === 0){
-                        effect.setTexture(null);
-                        effect.setVisible(false)
-                        effect.skill = {}
-                        effect.info.used = false;
-                    }
+            OpponentCharacter.forEach(char => {                              
+                char.stats.effect.forEach(effect =>{                                       
+                    if(Object.values(effect)[0] !== undefined || effect[Object.keys(effect)] !== undefined || effect === undefined){                        
+                        effect.duration -= 1;
+                        console.log(effect.duration)
+                        console.log(effect)
+                        if(char.stats.effect[0].duration === 0){
+                            char.stats.effect[0] = {}
+                            removeVisuals(effect, char)
+                        }
+                        if(char.stats.effect[1].duration === 0){
+                            char.stats.effect[1] = {}
+                            removeVisuals(effect, char)
+                        }
+                        if(char.stats.effect[2].duration === 0){
+                            char.stats.effect[2] = {}
+                            removeVisuals(effect, char)
+                        }
+                        if(char.stats.effect[3].duration === 0){
+                            char.stats.effect[3] = {}
+                            removeVisuals(effect, char)
+                        }
+                    }                    
                 })
+            })           
+        }
 
-                char4effects.forEach(effect => {
-                    if(effect.skill.duration !== 0){
-                        effect.skill.duration -= 1;
+        function updateEffectVisuals(effect, character){ 
+            console.log(character.charNumber)
+            
+            switch(character.charNumber){
+                case 1:
+                    if(effect.duration !== 0){
+                        char1Effect1.setTexture(effect.image)
                     }
-                    if(effect.skill.duration === 0){
-                        effect.setTexture(null);
-                        effect.setVisible(false)
-                        effect.skill = {}
-                        effect.info.used = false;
+                    break;
+                case 2:
+                    if(effect.duration !== 0){
+                        char2Effect1.setTexture(effect.image)
                     }
-                })
-
-                char5effects.forEach(effect => {
-                    if(effect.skill.duration !== 0){
-                        effect.skill.duration -= 1;
+                    break;
+                case 3:
+                    if(effect.duration !== 0){
+                        char3Effect1.setTexture(effect.image)
                     }
-                    if(effect.skill.duration === 0){
-                        effect.setTexture(null);
-                        effect.setVisible(false)
-                        effect.skill = {}
-                        effect.info.used = false;
+                    break;
+                case 4:
+                    if(effect.duration !== 0){
+                        char4Effect1.setTexture(effect.image)
+                        
                     }
-                })
-
-                char6effects.forEach(effect => {
-                    if(effect.skill.duration !== 0){
-                        effect.skill.duration -= 1;
+                    break;
+                case 5:
+                    if(effect.duration !== 0){
+                        char5Effect1.setTexture(effect.image)
                     }
-                    if(effect.skill.duration === 0){
-                        effect.setTexture(null);
-                        effect.setVisible(false)
-                        effect.skill = {}
-                        effect.info.used = false;
+                    break;
+                case 6:
+                    if(effect.duration !== 0){
+                        char6Effect1.setTexture(effect.image)
                     }
-                })
-                updatedDuration = true;
+                    break;                
             }
+        }
+
+        function removeVisuals(effect, character){   
+            console.log(character)
+            switch(character.stats.charNumber){
+                case 1:
+                    char1effects.forEach(e =>{               
+                        if(e.texture.key === effect.image){
+                            e.setTexture("effect")
+                        }
+                    })
+                    break;
+                case 2:
+                    char2effects.forEach(e =>{               
+                        if(e.texture.key === effect.image){
+                            e.setTexture("effect")
+                        }
+                    })
+                    break;
+                case 3:
+                    char3effects.forEach(e =>{               
+                        if(e.texture.key === effect.image){
+                            e.setTexture("effect")
+                        }
+                    })
+                    break;
+                case 4:
+                    char4effects.forEach(e =>{               
+                        if(e.texture.key === effect.image){
+                            e.setTexture("effect")
+                        }
+                    })
+                    break;
+                case 5:
+                    char5effects.forEach(e =>{               
+                        if(e.texture.key === effect.image){
+                            e.setTexture("effect")
+                        }
+                    })
+                    break;
+                case 6:
+                    char6effects.forEach(e =>{               
+                        if(e.texture.key === effect.image){
+                            e.setTexture("effect")
+                        }
+                    })
+                    break;
+            }         
+
         }
 
         function updateHealthText(){
@@ -1184,6 +1204,7 @@ export class GameScene extends Phaser.Scene{
                 opponentsHealth[i].setText("Health: " + OpponentCharacter[i].stats.health)
             }            
         }
+
 
         function doDamage(info){            
             console.log(info.charToUseOn + " " + info.damage)
@@ -1208,8 +1229,9 @@ export class GameScene extends Phaser.Scene{
                     char6.stats.health -= info.damage;
                     break;
             }
-            
-            updateHealthText()
+            if(myTurn){
+                updateHealthText()
+            }
         }
 
     }  

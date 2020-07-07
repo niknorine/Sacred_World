@@ -13,7 +13,7 @@ class Character extends Phaser.GameObjects.Sprite{
             skillUsed: false,
             charNumber: charNumber,
             effect: [
-                {effect1: undefined},
+                {effect1: undefined},                
                 {effect2: undefined},
                 {effect3: undefined},
                 {effect4: undefined},

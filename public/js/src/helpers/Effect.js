@@ -9,12 +9,13 @@ class Effect extends Phaser.GameObjects.Sprite{
 
         this.info = {
             name: name,
-            used: false
+            
             
         }    
 
         this.skill =         {
-            name: name,          
+            name: name,
+            used: false,          
             image: "mirage_step",
             currentCoolDown: 0,
             coolDownDuration: 2,

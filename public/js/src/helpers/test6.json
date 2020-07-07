@@ -7,7 +7,7 @@
     "selfEffect": false,
     "currentCoolDown": 0,
     "coolDownDuration": 2,
-    "duration": 1,
+    "duration": 0,
 
     "cost": {
         "physical": 1,

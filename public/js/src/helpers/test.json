@@ -3,6 +3,7 @@
 
     "name": "Mirage Step",          
     "image": "mirage_step",
+    "description": "",
     "character": "shiro",
     "selfEffect": false,
     "currentCoolDown": 0,

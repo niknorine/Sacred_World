@@ -8,6 +8,7 @@
     "currentCoolDown": 0,
     "coolDownDuration": 2,
     "duration": 2,
+    "description" : "Kyros will become invulnerable for one turn. The following turn Kyros will be invulnerable to Ranged Skills.",
 
     "cost": {
         "physical": 0,

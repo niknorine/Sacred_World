@@ -8,6 +8,7 @@
     "currentCoolDown": 0,
     "coolDownDuration": 2,
     "duration": 1,
+    "description" : "Kyros targets one enemy, instantly killing them if they are below 25 health. If the target is currently affected by Silent Dagger, this skill will execute at 35 health.",
 
     "cost": {
         "physical": 1,

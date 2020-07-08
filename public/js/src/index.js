@@ -8,9 +8,10 @@ import {GameScene} from "/js/src/scenes/GameScene.js"
 let game = new Phaser.Game({
     width: 1280,
     height: 720,
+    parent: 'phaser-example',
+    type: Phaser.AUTO,
     scene:[
         LoadScene,MenuScene,GameScene
-
     ]
 
 })

@@ -8,6 +8,7 @@
     "currentCoolDown": 0,
     "coolDownDuration": 2,
     "duration": 1,
+    "description" : "",
 
     "cost": {
         "physical": 0,

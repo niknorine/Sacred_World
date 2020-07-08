@@ -8,6 +8,7 @@
     "currentCoolDown": 0,
     "coolDownDuration": 0,
     "duration": 1,
+    "description" : "Kyros deals 15 piercing damage to one enemy. This skill will deal an additional 10 damage to a target currently affected by Silent Dagger.",
 
     "cost": {
         "physical": 1,

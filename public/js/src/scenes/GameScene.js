@@ -24,11 +24,23 @@ export class GameScene extends Phaser.Scene{
 
         let myTurn = false;
 
+        
+        var rect = new Phaser.Geom.Rectangle(680, 595, 600, 125)
+
+        var graphics = this.add.graphics({ fillStyle: { color: 0xFFFFFF, alpha: 0.3}});
+
+        let effectDescTxt = this.add.text(680, 595, "Skill Name: ", { font: '"Press Start 2P"' }).setDepth(200).setVisible(true).setColor("#000000").setFontSize("20px").setWordWrapWidth(500)
+
+        graphics.fillRectShape(rect).setDepth(200).lineStyle(2, 0x1F1F1F , 1);
+        
         this.socket = io('http://localhost:1000') // DONT TOUCH THIS. THIS IS THE CONNECTION TO THE SERVER
        
         // We will keep the selected skill. We want to know what skill the character has selected.
         let selectedSkill = {};
+
         
+
+
         //ARRAYS AND OTHER SHIT
         var gameInitiated = false; 
         let isPlayerA = false;
@@ -187,12 +199,12 @@ export class GameScene extends Phaser.Scene{
 
         //The energy text. We will change this from text to some ui. This is for testing purposes.
         var testtext = this.add.text(0, 0, 'skill info', { font: '"Press Start 2P"' }).setDepth(101).setVisible(true) ;
-        var physical = this.add.text(10, 600, '', { font: '"Press Start 2P"' }).setDepth(101).setVisible(true).setColor("#ffffff").setFontSize("14px").setStroke("#000000", 4).setText("Physical: " + Energy.physical).setInteractive();
-        var magic = this.add.text(160, 600, '', { font: '"Press Start 2P"' }).setDepth(101).setVisible(true).setColor("#ffffff").setFontSize("14px").setStroke("#000000", 4).setText("Magic: " + Energy.magic).setInteractive();
-        var strategy = this.add.text(310, 600, '', { font: '"Press Start 2P"' }).setDepth(101).setVisible(true).setColor("#ffffff").setFontSize("14px").setStroke("#000000", 4).setText("Strategy: " + Energy.strategy).setInteractive();
-        var agility = this.add.text(460, 600, '', { font: '"Press Start 2P"' }).setDepth(101).setVisible(true).setColor("#ffffff").setFontSize("14px").setStroke("#000000", 4).setText("Agility: " + Energy.agility).setInteractive();
-        var unique  = this.add.text(610, 600, '', { font: '"Press Start 2P"' }).setDepth(101).setVisible(true).setColor("#ffffff").setFontSize("14px").setStroke("#000000", 4).setText("Unique: " + Energy.unique).setInteractive();
-        var support = this.add.text(760, 600, '', { font: '"Press Start 2P"' }).setDepth(101).setVisible(true).setColor("#ffffff").setFontSize("14px").setStroke("#000000", 4).setText("Support: " + Energy.support).setInteractive();
+        var physical = this.add.text(10, 540, '', { font: '"Press Start 2P"' }).setDepth(101).setVisible(true).setColor("#ffffff").setFontSize("14px").setStroke("#000000", 4).setText("Physical: " + Energy.physical).setInteractive();
+        var magic = this.add.text(160, 540, '', { font: '"Press Start 2P"' }).setDepth(101).setVisible(true).setColor("#ffffff").setFontSize("14px").setStroke("#000000", 4).setText("Magic: " + Energy.magic).setInteractive();
+        var strategy = this.add.text(310, 540, '', { font: '"Press Start 2P"' }).setDepth(101).setVisible(true).setColor("#ffffff").setFontSize("14px").setStroke("#000000", 4).setText("Strategy: " + Energy.strategy).setInteractive();
+        var agility = this.add.text(460, 540, '', { font: '"Press Start 2P"' }).setDepth(101).setVisible(true).setColor("#ffffff").setFontSize("14px").setStroke("#000000", 4).setText("Agility: " + Energy.agility).setInteractive();
+        var unique  = this.add.text(610, 540, '', { font: '"Press Start 2P"' }).setDepth(101).setVisible(true).setColor("#ffffff").setFontSize("14px").setStroke("#000000", 4).setText("Unique: " + Energy.unique).setInteractive();
+        var support = this.add.text(760, 540, '', { font: '"Press Start 2P"' }).setDepth(101).setVisible(true).setColor("#ffffff").setFontSize("14px").setStroke("#000000", 4).setText("Support: " + Energy.support).setInteractive();
         // self.char1_skill3.on('pointerup', () => {
         
         //     this.socket.emit("useSkill", char1_skill3)
@@ -403,7 +415,7 @@ export class GameScene extends Phaser.Scene{
                 console.log(char4.stats.effect)
                 usedSkillsThisRound = []
                 enemyUsedSkillsLastRound = []
-                UpdateCoolDown()
+                UpdateCoolDown()                
                 randomizeAndUpdateEnergy()
                 updateHealthText()
             }
@@ -422,10 +434,10 @@ export class GameScene extends Phaser.Scene{
             }
             if(data === "player2" && !this.isPlayerA){
                 endTurnText.setVisible(true);
-                myTurn = true;  
+                myTurn = true; 
+                updateEffectVisuals() 
                 console.log(char4.stats.effect)
-                updatedDuration = false;
-                updateEffectDuration()
+                updatedDuration = false;                
                 usedSkillsThisRound = []
                 enemyUsedSkillsLastRound = []
                 UpdateCoolDown() 
@@ -451,20 +463,21 @@ export class GameScene extends Phaser.Scene{
                         console.log(selectedSkill.name + " : " + skill.skill.name)
                         //This is if they have clicked the same skill. We want to deselect it.
                         OpponentCharacter.forEach(char => {                            //We change the enemy characters to normal
-                            
+                            removeSkillText()
                             clearAllVisuals()
                             char.setInteractive(false)
                             selectedSkill = undefined;
+                            
                         }) 
                     }else{
                         //This means we can make the selected skill something else, as its not already selected, or there is no selected skill
                             
-                            selectedSkill = skill.skill;  
+                            selectedSkill = skill.skill;
+                            onClickSkill(skill)
                             //we want to loop through each skill to remove the visuals
                             clearAllVisuals();
                             
-                            updateOnSkillClick(selectedSkill, character, false)
-
+                            updateOnSkillClick(selectedSkill, character, false)                            
                         //as we are selecting a skill to be used, we want to change the visuals for the enemy that we can attack
                         OpponentCharacter.forEach(char => {
                             char.setInteractive(true)
@@ -498,6 +511,14 @@ export class GameScene extends Phaser.Scene{
             }
         })
 
+        char1_skill1.on("pointerover", () => {      
+            onHoverSkill(char1_skill1)
+        })
+
+        char1_skill1.on("pointerout", () => {
+            removeSkillText()
+        })
+
         char1_skill2.on("pointerdown", () => {
             if(char1_skill2.skill.skill.selfEffect){
                 selectedSkill = char1_skill2.skill.skill
@@ -505,6 +526,14 @@ export class GameScene extends Phaser.Scene{
             }else{
                 this.socket.emit("clickSkill",char1_skill2.skill, char1.stats)
             }
+        })
+
+        char1_skill2.on("pointerover", () => {      
+            onHoverSkill(char1_skill2)
+        })
+
+        char1_skill2.on("pointerout", () => {
+            removeSkillText();
         })
 
         char1_skill3.on("pointerdown", () => {
@@ -516,6 +545,14 @@ export class GameScene extends Phaser.Scene{
             }
         })     
 
+        char1_skill3.on("pointerover", () => {      
+            onHoverSkill(char1_skill3)
+        })
+
+        char1_skill1.on("pointerout", () => {
+            removeSkillText();
+        })
+
         char1_skill4.on("pointerdown", () => {            
             if(char1_skill4.skill.skill.selfEffect){
                 selectedSkill = char1_skill4.skill.skill
@@ -525,9 +562,15 @@ export class GameScene extends Phaser.Scene{
             }
         })     
 
+        char1_skill4.on("pointerover", () => {
+            onHoverSkill(char1_skill4)
+        })
 
+        char1_skill1.on("pointerout", () => {
+            removeSkillText()
+        })
         
-        char2_skill1.on("pointerdown", () => {             
+        char2_skill1.on("pointerdown", () => {                         
             if(char2_skill1.skill.skill.selfEffect){
                 selectedSkill = char2_skill1.skill.skill
                 this.socket.emit("use", char2_skill1.skill.skill, char2.stats);
@@ -536,6 +579,14 @@ export class GameScene extends Phaser.Scene{
             }
         })
 
+        char2_skill1.on("pointerover", () => {
+            onHoverSkill(char2_skill1)
+        })
+
+        char2_skill1.on("pointerout", () => {
+            removeSkillText()
+        })
+                
         char2_skill2.on("pointerdown", () => {
             if(char2_skill2.skill.skill.selfEffect){
                 selectedSkill = char2_skill2.skill.skill
@@ -544,6 +595,14 @@ export class GameScene extends Phaser.Scene{
                 this.socket.emit("clickSkill",char2_skill2.skill, char2.stats)
             }
             
+        })
+
+        char2_skill2.on("pointerover", () => {
+            onHoverSkill(char2_skill2)
+        })
+
+        char2_skill2.on("pointerout", () => {
+            removeSkillText()
         })
 
         char2_skill3.on("pointerdown", () => {           
@@ -556,6 +615,14 @@ export class GameScene extends Phaser.Scene{
             
         })  
 
+        char2_skill3.on("pointerover", () => {
+            onHoverSkill(char2_skill3)
+        })
+
+        char2_skill3.on("pointerout", () => {
+            removeSkillText()
+        })
+
         char2_skill4.on("pointerdown", () => {            
             if(char2_skill4.skill.skill.selfEffect){
                 selectedSkill = char2_skill4.skill.skill
@@ -565,6 +632,14 @@ export class GameScene extends Phaser.Scene{
             }
         }) 
 
+        char2_skill4.on("pointerover", () => {
+            onHoverSkill(char2_skill4)
+        })
+
+        char2_skill4.on("pointerout", () => {
+            removeSkillText()
+        })
+
         char3_skill1.on("pointerdown", () => {             
             if(char3_skill1.skill.skill.selfEffect){
                 selectedSkill = char3_skill1.skill.skill
@@ -572,6 +647,14 @@ export class GameScene extends Phaser.Scene{
             }else{       
                 this.socket.emit("clickSkill",char3_skill1.skill, char3.stats)
             }
+        })
+
+        char3_skill1.on("pointerover", () => {
+            onHoverSkill(char3_skill1)
+        })
+
+        char3_skill1.on("pointerout", () => {
+            removeSkillText()
         })
 
         char3_skill2.on("pointerdown", () => {            
@@ -584,6 +667,14 @@ export class GameScene extends Phaser.Scene{
             
         })
 
+        char3_skill2.on("pointerover", () => {
+            onHoverSkill(char3_skill2)
+        })
+
+        char3_skill2.on("pointerout", () => {
+            removeSkillText()
+        })
+
         char3_skill3.on("pointerdown", () => {            
             if(char3_skill3.skill.skill.selfEffect){
                 selectedSkill = char3_skill3.skill.skill
@@ -594,6 +685,14 @@ export class GameScene extends Phaser.Scene{
             
         })  
 
+        char3_skill3.on("pointerover", () => {
+            onHoverSkill(char3_skill3)
+        })
+
+        char3_skill3.on("pointerout", () => {
+            removeSkillText()
+        })
+
         char3_skill4.on("pointerdown", () => {            
             if(char3_skill4.skill.skill.selfEffect){
                 selectedSkill = char3_skill4.skill.skill
@@ -603,6 +702,13 @@ export class GameScene extends Phaser.Scene{
             }
         }) 
 
+        char3_skill4.on("pointerover", () => {
+            onHoverSkill(char3_skill4)
+        })
+
+        char3_skill4.on("pointerout", () => {
+            removeSkillText()
+        })
         
         char4_skill1.on("pointerdown", () => {           
             if(char4_skill1.skill.skill.selfEffect){
@@ -614,6 +720,14 @@ export class GameScene extends Phaser.Scene{
             
         }) 
 
+        char4_skill1.on("pointerover", () => {
+            onHoverSkill(char4_skill1)
+        })
+
+        char4_skill1.on("pointerout", () => {
+            removeSkillText()
+        })
+
         char4_skill2.on("pointerdown", () => {            
             if(char4_skill2.skill.skill.selfEffect){
                 selectedSkill = char4_skill2.skill.skill
@@ -622,6 +736,14 @@ export class GameScene extends Phaser.Scene{
             this.socket.emit("clickSkill",char4_skill2.skill, char4.stats)
             }
         }) 
+
+        char4_skill2.on("pointerover", () => {
+            onHoverSkill(char4_skill2)
+        })
+
+        char4_skill2.on("pointerout", () => {
+            removeSkillText()
+        })
 
         char4_skill3.on("pointerdown", () => {            
             if(char4_skill3.skill.skill.selfEffect){
@@ -632,6 +754,14 @@ export class GameScene extends Phaser.Scene{
             }
         }) 
 
+        char4_skill3.on("pointerover", () => {
+            onHoverSkill(char4_skill3)
+        })
+
+        char4_skill3.on("pointerout", () => {
+            removeSkillText()
+        })
+
         char4_skill4.on("pointerdown", () => {            
             if(char4_skill4.skill.skill.selfEffect){
                 selectedSkill = char4_skill4.skill.skill
@@ -641,8 +771,19 @@ export class GameScene extends Phaser.Scene{
             }
         }) 
 
-        
+        char4_skill4.on("pointerover", () => {
+            onHoverSkill(char4_skill4)
+        })
 
+        char4_skill4.on("pointerout", () => {
+            removeSkillText()
+        })
+
+
+        char3Effect1.on("pointerover", () =>{
+            console.log(char3 , 1)
+            onHoverEffect(char3, 1)
+        })
 
         endTurnText.on("pointerdown", () => {            
             this.socket.emit("endTurn", usedSkillsThisRound)
@@ -1117,22 +1258,22 @@ export class GameScene extends Phaser.Scene{
             switch(character.charNumber){
                 case 1:
                     if(effect.duration !== 0){
-                        char1Effect1.setTexture(effect.image)
+                        char1Effect1.setTexture(effect.image).setInteractive()
                     }
                     break;
                 case 2:
                     if(effect.duration !== 0){
-                        char2Effect1.setTexture(effect.image)
+                        char2Effect1.setTexture(effect.image).setInteractive()
                     }
                     break;
                 case 3:
                     if(effect.duration !== 0){
-                        char3Effect1.setTexture(effect.image)
+                        char3Effect1.setTexture(effect.image).setInteractive()
                     }
                     break;
                 case 4:
                     if(effect.duration !== 0){
-                        char4Effect1.setTexture(effect.image)
+                        char4Effect1.setTexture(effect.image).setInteractive()
                         
                     }
                     break;
@@ -1231,6 +1372,27 @@ export class GameScene extends Phaser.Scene{
             }
             if(myTurn){
                 updateHealthText()
+            }
+        }
+
+        function onHoverSkill(skill){
+            if(selectedSkill === undefined){
+                effectDescTxt.setText("Description: " + skill.skill.skill.description)
+            }
+        }
+
+        function onClickSkill(skill){
+            effectDescTxt.setText("Description: " + skill.skill.description)
+        }
+
+        function onHoverEffect(character, int){    
+                  console.log(character.stats.effect[int -1].name)
+            effectDescTxt.setText("Description: " + character.stats.effect[int -1].name)
+        }
+
+        function removeSkillText(){
+            if(selectedSkill === undefined){
+                effectDescTxt.setText("Description: ")
             }
         }
 

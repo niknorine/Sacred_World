@@ -7,7 +7,7 @@
     "selfEffect": false,
     "currentCoolDown": 0,
     "coolDownDuration": 2,
-    "duration": 0,
+    "duration": 1,
     "description" : "Kyros deals 5 piercing damage to one enemy who will be stunned for one turn. This skill bypassses invulnerability. ",
 
     "cost": {

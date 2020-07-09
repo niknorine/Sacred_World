@@ -99,15 +99,34 @@ io.on('connection', function (socket){
     })
 
     function calculateDamage(effect, characterToUseOn){
-        console.log("test 123" + JSON.stringify(characterToUseOn))
-        console.log(JSON.stringify("Used " + effect.name+ " on "+ characterToUseOn.charNumber))     
         
+        let damage = 0;
+        let immune = false;
+        console.log(JSON.stringify("Used " + effect.name+ " on "+ characterToUseOn.charNumber))
+        
+        
+        
+        // WE WANT TO CHECK FOR THE CURRENT EFFECTS THEY HAVE 
+        Object.keys(characterToUseOn.effect).forEach(key =>{
+            if(characterToUseOn.effect[key].name !== undefined){
+                if(characterToUseOn.effect[key].effect.damage_reduction !== 0){
+                    //IF THEY HAVE A DAMAGE REDUCTION BUFF
+                    console.log("Character has a damage reduction")
+                    if(characterToUseOn.effect[key].effect.damage_reduction === 100){
+                        damage = 0;
+                        immune = true;
+                    }else{
+                        damage -= characterToUseOn.effect[key].effect.damage_reduction;
+                    }
+                }
+            }
+        })
         
         //This is where we should calculate the damage and shit
         // We should probably add a check for damage reduction but i cba atm
 
         return {
-            damage: effect.effect.damage,
+            damage: damage,
             charToUseOn: characterToUseOn.charNumber
         }
     }

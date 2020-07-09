@@ -12,6 +12,8 @@ class Character extends Phaser.GameObjects.Sprite{
             energy: 5,
             skillUsed: false,
             charNumber: charNumber,
+            stunned: false,
+            stun_amount: 0,
             effect: [
                 {effect1: undefined},                
                 {effect2: undefined},

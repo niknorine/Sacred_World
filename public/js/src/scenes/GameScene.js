@@ -870,13 +870,15 @@ export class GameScene extends Phaser.Scene{
 
         this.socket.on("use", (skill, character) => {
             console.log("bb cock")
-            useSkill(skill, character)
-            this.socket.emit("sendEffectData", skill, character);
+            if(myTurn){
+                useSkill(skill, character)
+                this.socket.emit("sendEffectData", skill, character);
+            }
             
         })  
 
         this.socket.on("returnCalculated", function(info){
-            doDamage(info)
+            getSkillCalculation(info)
         })
 
         this.socket.on("sendEffectData", function(effects){
@@ -1417,29 +1419,63 @@ export class GameScene extends Phaser.Scene{
         }
 
 
-        function doDamage(info){            
+        function getSkillCalculation(info){            
             console.log(info.charToUseOn + " " + info.damage)
-            switch(info.charToUseOn){
-                case 1:
-                    char1.stats.health -= info.damage;
-                    
-                    break;
-                case 2:
-                    char2.stats.health -= info.damage;
-                    break;
-                case 3:
-                    char3.stats.health -= info.damage;
-                    break;
-                case 4:
-                    char4.stats.health -= info.damage;
-                    break;
-                case 5:
-                    char5.stats.health -= info.damage;
-                    break;
-                case 6:
-                    char6.stats.health -= info.damage;
-                    break;
+            //If there is damage to be done
+            if(info.damage !== 0){
+                switch(info.charToUseOn){
+                    case 1:
+                        char1.stats.health -= info.damage;                    
+                        break;
+                    case 2:
+                        char2.stats.health -= info.damage;
+                        break;
+                    case 3:
+                        char3.stats.health -= info.damage;
+                        break;
+                    case 4:
+                        char4.stats.health -= info.damage;
+                        break;
+                    case 5:
+                        char5.stats.health -= info.damage;
+                        break;
+                    case 6:
+                        char6.stats.health -= info.damage;
+                        break;
+                }
             }
+            //If we need to add a stun effect
+            if(info.stun === true){
+                switch(info.charToUseOn){
+                    case 1:
+                        char1.stats.stunned = true;
+                        char1.stats.stun_amount = info.stun_amount;                   
+                        break;
+                    case 2:
+                        char2.stats.stunned = true;
+                        char2.stats.stun_amount = info.stun_amount;    
+                        break;
+                    case 3:
+                        char3.stats.stunned = true;
+                        char3.stats.stun_amount = info.stun_amount;    
+                        break;
+                    case 4:
+                        char4.stats.stunned = true;
+                        char4.stats.stun_amount = info.stun_amount;    
+                        break;
+                    case 5:
+                        char5.stats.stunned = true;
+                        char5.stats.stun_amount = info.stun_amount;    
+                        break;
+                    case 6:
+                        char6.stats.stunned = true;
+                        char6.stats.stun_amount = info.stun_amount;    
+                        break;
+                }
+            }
+
+
+
             if(myTurn){
                 updateHealthText()
             }
@@ -1478,6 +1514,10 @@ export class GameScene extends Phaser.Scene{
             if(selectedSkill === undefined){
                 effectDescTxt.setText("Description: ")
             }
+        }
+
+        function onCharacterDeath(){
+
         }
 
     }  

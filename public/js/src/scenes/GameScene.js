@@ -22,6 +22,8 @@ export class GameScene extends Phaser.Scene{
     create() {
         var scene = this;
 
+        let savedSkillText = "";
+
         let myTurn = false;
 
         
@@ -436,6 +438,7 @@ export class GameScene extends Phaser.Scene{
                 endTurnText.setVisible(true);
                 myTurn = true; 
                 updateEffectVisuals() 
+                updateEffectDuration()
                 console.log(char4.stats.effect)
                 updatedDuration = false;                
                 usedSkillsThisRound = []
@@ -780,10 +783,16 @@ export class GameScene extends Phaser.Scene{
         })
 
 
-        char3Effect1.on("pointerover", () =>{
-            console.log(char3 , 1)
+        char3Effect1.on("pointerover", () =>{            
             onHoverEffect(char3, 1)
         })
+
+        char3Effect1.on("pointerout", () =>{            
+            unHoverEffect()
+        })
+
+
+        
 
         endTurnText.on("pointerdown", () => {            
             this.socket.emit("endTurn", usedSkillsThisRound)
@@ -1175,7 +1184,6 @@ export class GameScene extends Phaser.Scene{
                             case 3:
                                 char3.stats.effect[index] = skill
                                 finished = true;
-                                console.log(char3.stats.effect)
                                 break;
                             case 4:
                                 char4.stats.effect[index] = skill
@@ -1202,6 +1210,7 @@ export class GameScene extends Phaser.Scene{
             
             characters.forEach(char => {                
                 char.stats.effect.forEach(effect =>{
+                    console.log(effect[Object.keys(effect)])
                     if(Object.values(effect)[0] !== undefined || effect[Object.keys(effect)] !== undefined || effect === undefined){
                         effect.duration -= 1;
                         console.log(effect.duration)
@@ -1220,17 +1229,17 @@ export class GameScene extends Phaser.Scene{
                         if(char.stats.effect[3].duration === 0){
                             char.stats.effect[3] = {}
                             removeVisuals(effect, char)
-                        }                        
+                        }
                     }
                 })
             })
 
             OpponentCharacter.forEach(char => {                              
-                char.stats.effect.forEach(effect =>{                                       
+                char.stats.effect.forEach(effect =>{   
+                    console.log(effect)                                    
                     if(Object.values(effect)[0] !== undefined || effect[Object.keys(effect)] !== undefined || effect === undefined){                        
                         effect.duration -= 1;
-                        console.log(effect.duration)
-                        console.log(effect)
+                        
                         if(char.stats.effect[0].duration === 0){
                             char.stats.effect[0] = {}
                             removeVisuals(effect, char)
@@ -1253,40 +1262,101 @@ export class GameScene extends Phaser.Scene{
         }
 
         function updateEffectVisuals(effect, character){ 
-            console.log(character.charNumber)
-            
-            switch(character.charNumber){
-                case 1:
-                    if(effect.duration !== 0){
-                        char1Effect1.setTexture(effect.image).setInteractive()
-                    }
-                    break;
-                case 2:
-                    if(effect.duration !== 0){
-                        char2Effect1.setTexture(effect.image).setInteractive()
-                    }
-                    break;
-                case 3:
-                    if(effect.duration !== 0){
-                        char3Effect1.setTexture(effect.image).setInteractive()
-                    }
-                    break;
-                case 4:
-                    if(effect.duration !== 0){
-                        char4Effect1.setTexture(effect.image).setInteractive()
+            let done = false;
+
+
+            if(character != undefined){
+
+                while(!done){
+                    switch(character.charNumber){
+                        case 1:
+                            if(effect.duration !== 0){                           
+                                for(let i = 0; char1effects.length !==i; i++){
+                                    if(char1effects[i].texture.key === "effect"){
+                                        char1effects[i].setTexture(effect.image).setInteractive()
+                                        done = true;
+                                        break;
+                                    }
+                                }                                                            
+                            }else{
+                                done = true;
+                                break;
+                            }
+                            break;
+                        case 2:
+                            if(effect.duration !== 0){                           
+                                for(let i = 0; char2effects.length !==i; i++){
+                                    if(char2effects[i].texture.key === "effect"){
+                                        char2effects[i].setTexture(effect.image).setInteractive()
+                                        done = true;
+                                        break;
+                                    }
+                                }                                                            
+                            }else{
+                                done = true;
+                                break;
+                            }
+                            break;
+                        case 3:
+                            if(effect.duration !== 0){                           
+                                for(let i = 0; char3effects.length !==i; i++){
+                                    if(char3effects[i].texture.key === "effect"){
+                                        char3effects[i].setTexture(effect.image).setInteractive()
+                                        done = true;
+                                        break;
+                                    }
+                                }                                                            
+                            }else{
+                                done = true;
+                                break;
+                            }
+                            break;
+                        case 4:
+                            if(effect.duration !== 0){                           
+                                for(let i = 0; char4effects.length !==i; i++){
+                                    if(char4effects[i].texture.key === "effect"){
+                                        char4effects[i].setTexture(effect.image).setInteractive()
+                                        done = true;
+                                        break;
+                                    }
+                                }                                                            
+                            }else{
+                                done = true;
+                                break;
+                            }
+                            break;
+                        case 5:
+                            if(effect.duration !== 0){                           
+                                for(let i = 0; char5effects.length !==i; i++){
+                                    if(char5effects[i].texture.key === "effect"){
+                                        char5effects[i].setTexture(effect.image).setInteractive()
+                                        done = true;
+                                        break;
+                                    }
+                                }                                                            
+                            }else{
+                                done = true;
+                                break;
+                            }
+                            break;
+                        case 6:
+                            if(effect.duration !== 0){                           
+                                for(let i = 0; char6effects.length !==i; i++){
+                                    if(char6effects[i].texture.key === "effect"){
+                                        char6effects[i].setTexture(effect.image).setInteractive()
+                                        done = true;
+                                        break;
+                                    }
+                                }                                                            
+                            }else{
+                                done = true;
+                                break;
+                            }
+                            break;
                         
+                                            
                     }
-                    break;
-                case 5:
-                    if(effect.duration !== 0){
-                        char5Effect1.setTexture(effect.image)
-                    }
-                    break;
-                case 6:
-                    if(effect.duration !== 0){
-                        char6Effect1.setTexture(effect.image)
-                    }
-                    break;                
+                }
             }
         }
 
@@ -1385,12 +1455,26 @@ export class GameScene extends Phaser.Scene{
             effectDescTxt.setText("Description: " + skill.skill.description)
         }
 
-        function onHoverEffect(character, int){    
-                  console.log(character.stats.effect[int -1].name)
+        function onHoverEffect(character, int){
+            if(effectDescTxt != "Description: "){
+                savedSkillText = effectDescTxt.text;
+            }else{
+                savedSkillText = "Description: "
+            }   
+            console.log(character.stats.effect[int -1].name)
             effectDescTxt.setText("Description: " + character.stats.effect[int -1].name)
         }
 
-        function removeSkillText(){
+        function unHoverEffect(){
+            if(savedSkillText === "Description: "){
+                effectDescTxt.setText("Description: ")            
+            }else{
+                effectDescTxt.setText(savedSkillText)
+                savedSkillText = "Description: "
+            }
+        }
+
+        function removeSkillText(){            
             if(selectedSkill === undefined){
                 effectDescTxt.setText("Description: ")
             }

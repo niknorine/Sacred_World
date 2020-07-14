@@ -25,18 +25,18 @@ export class LoadScene extends Phaser.Scene{
 
         //skills
         this.load.image('mirage_step', '/js/src/assets/mirage_step.png')
-        this.load.image('skill1', '/js/src/assets/skill2.png')
-        this.load.image('skill2', '/js/src/assets/skill3.png')
-        this.load.image('devil', '/js/src/assets/devil.png')
+        this.load.image('heaven_eater', '/js/src/assets/heaven.png')
+        this.load.image('stance_of_death', '/js/src/assets/stance.png')
+        this.load.image('devil_piercer', '/js/src/assets/devil.png')
 
         //effect placeholder
         this.load.image('effect', '/js/src/assets/white.png')
 
 
-        this.load.image('skill4', '/js/src/assets/Ren_Skill_1_x_100.png')
-        this.load.image('skill5', '/js/src/assets/Ren_Skill_2_x_100.png')
-        this.load.image('skill6', '/js/src/assets/Ren_Skill_3_x_100.png')
-        this.load.image('skill7', '/js/src/assets/Ren_Skill_4_x_100.png')
+        this.load.image('fist_of_the_rising_sun', '/js/src/assets/Ren_Skill_1_x_100.png')
+        this.load.image('tsunami_vice_takedown', '/js/src/assets/Ren_Skill_2_x_100.png')
+        this.load.image('arm_quake', '/js/src/assets/Ren_Skill_3_x_100.png')
+        this.load.image('eye_of_the_tiger', '/js/src/assets/Ren_Skill_4_x_100.png')
 
         this.load.image('serrated_wind_slash', '/js/src/assets/Kyros_Skill_1_x_100.png')
         this.load.image('silent_dagger', '/js/src/assets/Kyros_Skill_2_x_100.png')

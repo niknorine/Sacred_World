@@ -23,6 +23,7 @@ export class GameScene extends Phaser.Scene{
         var scene = this;
 
         let savedSkillText = "";
+        let savedCostText = "";
 
         let myTurn = false;
 
@@ -31,7 +32,8 @@ export class GameScene extends Phaser.Scene{
 
         var graphics = this.add.graphics({ fillStyle: { color: 0xFFFFFF, alpha: 0.3}});
 
-        let effectDescTxt = this.add.text(680, 595, "Skill Name: ", { font: '"Press Start 2P"' }).setDepth(200).setVisible(true).setColor("#000000").setFontSize("20px").setWordWrapWidth(500)
+        let effectDescTxt = this.add.text(680, 595, "Description: ", { font: '"Press Start 2P"' }).setDepth(200).setVisible(true).setColor("#000000").setFontSize("20px").setWordWrapWidth(500)
+        let effectCostTxt = this.add.text(680, 700, "Cost: ", { font: '"Press Start 2P"' }).setDepth(200).setVisible(true).setColor("#000000").setFontSize("20px").setWordWrapWidth(500)
 
         graphics.fillRectShape(rect).setDepth(200).lineStyle(2, 0x1F1F1F , 1);
         
@@ -51,6 +53,7 @@ export class GameScene extends Phaser.Scene{
         let characters = [];
         let charactersHeath = [];
         let opponentsHealth = [];
+
         let character1Skills = [];
         let character2Skills = [];
         let character3Skills = [];
@@ -58,16 +61,20 @@ export class GameScene extends Phaser.Scene{
         let character5Skills = [];
         let character6Skills = [];
         let allSkills = []
+
         let char1effects = []
         let char2effects = []
         let char3effects = []
+        let char4effects = []
+        let char5effects = []
+        let char6effects = []
+
+
         let updatedDuration = true
        
         let testSkill = this.cache.json.get("test")
 
-        let char4effects = []
-        let char5effects = []
-        let char6effects = []
+
         
         let enemyUsedSkillsLastRound = [];
         let usedSkillsThisRound = [];
@@ -81,6 +88,8 @@ export class GameScene extends Phaser.Scene{
         let char2_cooldowns = [];
         let char3_cooldowns = [];
         let char4_cooldowns = [];
+        let char5_cooldowns = [];
+        let char6_cooldowns = [];
         //background. dont know why i named it test
         let test =  this.add.image(0,0,"background").setOrigin(0).setDepth(0).setInteractive().setDepth(1);
        
@@ -98,10 +107,15 @@ export class GameScene extends Phaser.Scene{
 
         // Declaring the characters. isPlayerA will be (char1, char2, char3) and the other player will be (char4, char5, char6)
         // We should probably move this to the server side, as in, we pass the data of the character from the server
+
         // I hard coded it for now for easier testing
         var char1 = new Character(this, 0,0, "shiro", 1).setScale(1, 1).setDepth(100).setVisible(false) 
         var char2 = new Character(this, 0,0, "ren", 2).setScale(1, 1).setDepth(100).setVisible(false)       
         var char3 = new Character(this, 0,0, "kyros", 3).setScale(1, 1).setDepth(100).setVisible(false)   
+        // Characters for the player that is not isPlayerA
+        var char4 = new Character(this, 0,0, "ren", 4).setScale(1, 1).setDepth(100).setVisible(false)         
+        var char5 = new Character(this, 0,0, "kyros", 5).setScale(1, 1).setDepth(100).setVisible(false)       
+        var char6 = new Character(this, 0,0, "shiro", 6).setScale(1, 1).setDepth(100).setVisible(false) 
 
         var char1Effect1 = new Effect(this,0,0, "effect", "Mirage Step").setDepth(102).setScale(0.3,0.3)
         var char1Effect2 = new Effect(this,0,0, "effect", "Mirage Step").setDepth(102).setScale(0.3,0.3)
@@ -141,10 +155,7 @@ export class GameScene extends Phaser.Scene{
         
         
 
-        // Characters for the player that is not isPlayerA
-        var char4 = new Character(this, 0,0, "elf", 4).setScale(0.05, 0.05).setDepth(100).setVisible(false)         
-        var char5 = new Character(this, 0,0, "elf", 5).setScale(0.05, 0.05).setDepth(100).setVisible(false)       
-        var char6 = new Character(this, 0,0, "elf", 6).setScale(0.05, 0.05).setDepth(100).setVisible(false)
+
         //health for player 2
 
         
@@ -152,20 +163,9 @@ export class GameScene extends Phaser.Scene{
         // and then declare them like (let char1_skill1 = new Skill(this,0,0, char1.skill.json))
         
         let char1_skill1 = new Skill(this,0,0, "mirage_step", "Mirage Step", char1.stats.name, this.cache.json.get("test")).setDepth(102).setScale(0.5,0.5).setInteractive();
-        let char1_skill2 = new Skill(this,0,0, "skill1", "Heaven Eater", char1.stats.name, this.cache.json.get("test2")).setDepth(102).setScale(0.5,0.5).setInteractive();
-        let char1_skill3 = new Skill(this,0,0, "skill2", "Stance Of Death", char1.stats.name, this.cache.json.get("test3")).setDepth(102).setScale(0.5,0.5).setInteractive();
-        let char1_skill4 = new Skill(this,0,0, "devil", "Devil Piercer", char1.stats.name, this.cache.json.get("test4")).setDepth(102).setScale(0.5,0.5).setInteractive();
-
-        let char4_skill1 = new Skill(this,0,0, "mirage_step", "Mirage Step", char4.stats.name, this.cache.json.get("test5")).setDepth(102).setScale(0.5,0.5).setInteractive();
-        let char4_skill2 = new Skill(this,0,0, "skill1", "Heaven Eater", char4.stats.name, this.cache.json.get("test6")).setDepth(102).setScale(0.5,0.5).setInteractive();
-        let char4_skill3 = new Skill(this,0,0, "skill2", "Stance Of Death", char4.stats.name, this.cache.json.get("test7")).setDepth(102).setScale(0.5,0.5).setInteractive();
-        let char4_skill4 = new Skill(this,0,0, "devil", "Devil Piercer", char4.stats.name, this.cache.json.get("test8")).setDepth(102).setScale(0.5,0.5).setInteractive();
-
-        let char4_skill1_cooldown = this.add.text(0, 0, 'Hello World', { font: '"Press Start 2P"' }).setDepth(101).setVisible(false) ;
-        let char4_skill2_cooldown = this.add.text(0, 0, 'Hello World', { font: '"Press Start 2P"' }).setDepth(101).setVisible(false) ;
-        let char4_skill3_cooldown = this.add.text(0, 0, 'Hello World', { font: '"Press Start 2P"' }).setDepth(101).setVisible(false) ;
-        let char4_skill4_cooldown = this.add.text(0, 0, 'Hello World', { font: '"Press Start 2P"' }).setDepth(101).setVisible(false) ;        
-        char4_cooldowns.push(char4_skill1_cooldown, char4_skill2_cooldown, char4_skill3_cooldown,char4_skill4_cooldown)
+        let char1_skill2 = new Skill(this,0,0, "heaven_eater", "Heaven Eater", char1.stats.name, this.cache.json.get("test2")).setDepth(102).setScale(0.5,0.5).setInteractive();
+        let char1_skill3 = new Skill(this,0,0, "devil_piercer", "Stance Of Death", char1.stats.name, this.cache.json.get("test3")).setDepth(102).setScale(0.5,0.5).setInteractive();
+        let char1_skill4 = new Skill(this,0,0, "stance_of_death", "Devil Piercer", char1.stats.name, this.cache.json.get("test4")).setDepth(102).setScale(0.5,0.5).setInteractive();
         
         let char1_skill1_cooldown = this.add.text(0, 0, 'Hello World', { font: '"Press Start 2P"' }).setDepth(101).setVisible(false) ;
         let char1_skill2_cooldown = this.add.text(0, 0, 'Hello World', { font: '"Press Start 2P"' }).setDepth(101).setVisible(false) ;
@@ -173,31 +173,79 @@ export class GameScene extends Phaser.Scene{
         let char1_skill4_cooldown = this.add.text(0, 0, 'Hello World', { font: '"Press Start 2P"' }).setDepth(101).setVisible(false) ;
         char1_cooldowns.push(char1_skill1_cooldown, char1_skill2_cooldown, char1_skill3_cooldown, char1_skill4_cooldown)
 
-        let char2_skill1 = new Skill(this,0,0, "skill4", "Fist of the Rising Sun", char2.stats.name, this.cache.json.get("test9")).setDepth(102).setScale(0.5,0.5).setInteractive();
-        let char2_skill2 = new Skill(this,0,0, "skill5", "Tsunami Vice Takedown", char2.stats.name, this.cache.json.get("test10")).setDepth(102).setScale(0.5,0.5).setInteractive();
-        let char2_skill3 = new Skill(this,0,0, "skill6", "Arm Quake", char2.stats.name, this.cache.json.get("test11")).setDepth(102).setScale(0.5,0.5).setInteractive();
-        let char2_skill4 = new Skill(this,0,0, "skill7", "Eye of the Tiger", char2.stats.name, this.cache.json.get("test12")).setDepth(102).setScale(0.5,0.5).setInteractive();
+
+        let char2_skill1 = new Skill(this,0,0, "fist_of_the_rising_sun", "Fist of the Rising Sun", char2.stats.name, this.cache.json.get("test9")).setDepth(102).setScale(0.5,0.5).setInteractive();
+        let char2_skill2 = new Skill(this,0,0, "tsunami_vice_takedown", "Tsunami Vice Takedown", char2.stats.name, this.cache.json.get("test10")).setDepth(102).setScale(0.5,0.5).setInteractive();
+        let char2_skill3 = new Skill(this,0,0, "arm_quake", "Arm Quake", char2.stats.name, this.cache.json.get("test11")).setDepth(102).setScale(0.5,0.5).setInteractive();
+        let char2_skill4 = new Skill(this,0,0, "eye_of_the_tiger", "Eye of the Tiger", char2.stats.name, this.cache.json.get("test12")).setDepth(102).setScale(0.5,0.5).setInteractive();
+
+        let char2_skill1_cooldown = this.add.text(0, 0, 'Hello World', { font: '"Press Start 2P"' }).setDepth(101).setVisible(false) ;
+        let char2_skill2_cooldown = this.add.text(0, 0, 'Hello World', { font: '"Press Start 2P"' }).setDepth(101).setVisible(false) ;
+        let char2_skill3_cooldown = this.add.text(0, 0, 'Hello World', { font: '"Press Start 2P"' }).setDepth(101).setVisible(false) ;
+        let char2_skill4_cooldown = this.add.text(0, 0, 'Hello World', { font: '"Press Start 2P"' }).setDepth(101).setVisible(false) ;
+        char2_cooldowns.push(char2_skill1_cooldown, char2_skill2_cooldown, char2_skill3_cooldown, char2_skill4_cooldown)       
+
 
         let char3_skill1 = new Skill(this,0,0, "serrated_wind_slash", "Wind Slash", char3.stats.name, this.cache.json.get("test5")).setDepth(102).setScale(0.5,0.5).setInteractive();
         let char3_skill2 = new Skill(this,0,0, "silent_dagger", "Silent Dagger", char3.stats.name, this.cache.json.get("test6")).setDepth(102).setScale(0.5,0.5).setInteractive();
         let char3_skill3 = new Skill(this,0,0, "trojan_execution", "Trojan Execution", char3.stats.name, this.cache.json.get("test7")).setDepth(102).setScale(0.5,0.5).setInteractive();
         let char3_skill4 = new Skill(this,0,0, "evasive_charge", "Charge", char3.stats.name, this.cache.json.get("test8")).setDepth(102).setScale(0.5,0.5).setInteractive();
 
-        let char2_skill1_cooldown = this.add.text(0, 0, 'Hello World', { font: '"Press Start 2P"' }).setDepth(101).setVisible(false) ;
-        let char2_skill2_cooldown = this.add.text(0, 0, 'Hello World', { font: '"Press Start 2P"' }).setDepth(101).setVisible(false) ;
-        let char2_skill3_cooldown = this.add.text(0, 0, 'Hello World', { font: '"Press Start 2P"' }).setDepth(101).setVisible(false) ;
-        let char2_skill4_cooldown = this.add.text(0, 0, 'Hello World', { font: '"Press Start 2P"' }).setDepth(101).setVisible(false) ;
-        char2_cooldowns.push(char2_skill1_cooldown, char2_skill2_cooldown, char2_skill3_cooldown, char2_skill4_cooldown)
-
-        // let char3_skill1 = new Skill(this,0,0, char1.skill.image, "Mirage Step", char3.stats.name).setDepth(102).setScale(0.03,0.03).setInteractive();
-        // let char3_skill2 = new Skill(this,0,0, "skill1", "Something Else", char3.stats.name).setDepth(102).setScale(0.03,0.03).setInteractive();
-        // let char3_skill3 = new Skill(this,0,0, "skill2", "STANCE OF DEATH", char3.stats.name).setDepth(102).setScale(0.03,0.03).setInteractive();
-
         let char3_skill1_cooldown = this.add.text(0, 0, 'Hello World', { font: '"Press Start 2P"' }).setDepth(101).setVisible(false) ;
         let char3_skill2_cooldown = this.add.text(0, 0, 'Hello World', { font: '"Press Start 2P"' }).setDepth(101).setVisible(false) ;
         let char3_skill3_cooldown = this.add.text(0, 0, 'Hello World', { font: '"Press Start 2P"' }).setDepth(101).setVisible(false) ;
         let char3_skill4_cooldown = this.add.text(0, 0, 'Hello World', { font: '"Press Start 2P"' }).setDepth(101).setVisible(false) ;
         char3_cooldowns.push(char3_skill1_cooldown, char3_skill2_cooldown, char3_skill3_cooldown,char3_skill4_cooldown)
+
+
+        let char4_skill1 = new Skill(this,0,0, "fist_of_the_rising_sun", "Fist of the Rising Sun", char4.stats.name, this.cache.json.get("test9")).setDepth(102).setScale(0.5,0.5).setInteractive();
+        let char4_skill2 = new Skill(this,0,0, "tsunami_vice_takedown", "Tsunami Vice Takedown", char4.stats.name, this.cache.json.get("test10")).setDepth(102).setScale(0.5,0.5).setInteractive();
+        let char4_skill3 = new Skill(this,0,0, "arm_quake", "Arm Quake", char4.stats.name, this.cache.json.get("test11")).setDepth(102).setScale(0.5,0.5).setInteractive();
+        let char4_skill4 = new Skill(this,0,0, "eye_of_the_tiger", "Eye of the Tiger", char4.stats.name, this.cache.json.get("test12")).setDepth(102).setScale(0.5,0.5).setInteractive();
+       
+        let char4_skill1_cooldown = this.add.text(0, 0, 'Hello World', { font: '"Press Start 2P"' }).setDepth(101).setVisible(false) ;
+        let char4_skill2_cooldown = this.add.text(0, 0, 'Hello World', { font: '"Press Start 2P"' }).setDepth(101).setVisible(false) ;
+        let char4_skill3_cooldown = this.add.text(0, 0, 'Hello World', { font: '"Press Start 2P"' }).setDepth(101).setVisible(false) ;
+        let char4_skill4_cooldown = this.add.text(0, 0, 'Hello World', { font: '"Press Start 2P"' }).setDepth(101).setVisible(false) ;        
+        char4_cooldowns.push(char4_skill1_cooldown, char4_skill2_cooldown, char4_skill3_cooldown,char4_skill4_cooldown)
+
+
+        let char5_skill1 = new Skill(this,0,0, "serrated_wind_slash", "Wind Slash", char5.stats.name, this.cache.json.get("test5")).setDepth(102).setScale(0.5,0.5).setInteractive();
+        let char5_skill2 = new Skill(this,0,0, "silent_dagger", "Silent Dagger", char5.stats.name, this.cache.json.get("test6")).setDepth(102).setScale(0.5,0.5).setInteractive();
+        let char5_skill3 = new Skill(this,0,0, "trojan_execution", "Trojan Execution", char5.stats.name, this.cache.json.get("test7")).setDepth(102).setScale(0.5,0.5).setInteractive();
+        let char5_skill4 = new Skill(this,0,0, "evasive_charge", "Charge", char5.stats.name, this.cache.json.get("test8")).setDepth(102).setScale(0.5,0.5).setInteractive();
+
+        let char5_skill1_cooldown = this.add.text(0, 0, 'Hello World', { font: '"Press Start 2P"' }).setDepth(101).setVisible(false) ;
+        let char5_skill2_cooldown = this.add.text(0, 0, 'Hello World', { font: '"Press Start 2P"' }).setDepth(101).setVisible(false) ;
+        let char5_skill3_cooldown = this.add.text(0, 0, 'Hello World', { font: '"Press Start 2P"' }).setDepth(101).setVisible(false) ;
+        let char5_skill4_cooldown = this.add.text(0, 0, 'Hello World', { font: '"Press Start 2P"' }).setDepth(101).setVisible(false) ;
+        char5_cooldowns.push(char5_skill1_cooldown, char5_skill2_cooldown, char5_skill3_cooldown,char5_skill4_cooldown)
+
+
+
+
+        let char6_skill1 = new Skill(this,0,0, "mirage_step", "Mirage Step", char6.stats.name, this.cache.json.get("test")).setDepth(102).setScale(0.5,0.5).setInteractive();
+        let char6_skill2 = new Skill(this,0,0, "heaven_eater", "Heaven Eater", char6.stats.name, this.cache.json.get("test2")).setDepth(102).setScale(0.5,0.5).setInteractive();
+        let char6_skill3 = new Skill(this,0,0, "devil_piercer", "Stance Of Death", char6.stats.name, this.cache.json.get("test3")).setDepth(102).setScale(0.5,0.5).setInteractive();
+        let char6_skill4 = new Skill(this,0,0, "stance_of_death", "Devil Piercer", char6.stats.name, this.cache.json.get("test4")).setDepth(102).setScale(0.5,0.5).setInteractive();
+
+        let char6_skill1_cooldown = this.add.text(0, 0, 'Hello World', { font: '"Press Start 2P"' }).setDepth(101).setVisible(false) ;
+        let char6_skill2_cooldown = this.add.text(0, 0, 'Hello World', { font: '"Press Start 2P"' }).setDepth(101).setVisible(false) ;
+        let char6_skill3_cooldown = this.add.text(0, 0, 'Hello World', { font: '"Press Start 2P"' }).setDepth(101).setVisible(false) ;
+        let char6_skill4_cooldown = this.add.text(0, 0, 'Hello World', { font: '"Press Start 2P"' }).setDepth(101).setVisible(false) ;        
+        char6_cooldowns.push(char6_skill1_cooldown, char6_skill2_cooldown, char6_skill3_cooldown,char6_skill4_cooldown)
+        
+
+
+        
+
+       
+
+      
+
+        
+
+        
 
         //The energy text. We will change this from text to some ui. This is for testing purposes.
         var testtext = this.add.text(0, 0, 'skill info', { font: '"Press Start 2P"' }).setDepth(101).setVisible(true) ;
@@ -272,6 +320,8 @@ export class GameScene extends Phaser.Scene{
                 }else{
                     //This means you are player2. We flip the characters around.
                     character4Skills.push(char4_skill1,char4_skill2,char4_skill3,char4_skill4)
+                    character5Skills.push(char5_skill1,char5_skill2,char5_skill3,char5_skill4)
+                    character6Skills.push(char6_skill1,char6_skill2,char6_skill3,char6_skill4)
                     OpponentCharacter.push(char1, char2, char3);
                     characters.push(char4,char5,char6)
                     opponentsHealth.push(char1_health, char2_health, char3_health) 
@@ -298,13 +348,18 @@ export class GameScene extends Phaser.Scene{
                     allSkills.push(char4_skill1,char4_skill2,char4_skill3,char4_skill4)
                     for(let i = 0; i < character4Skills.length; i++){
                         character4Skills[i].setInteractive()
+                        character5Skills[i].setInteractive()
+                        character6Skills[i].setInteractive()
                     }
                     for(let i = 0; i < character4Skills.length; i++){
-                        character4Skills[i].setOrigin((i + 2) * -2.2 ,-0.6)                         
+                        character4Skills[i].setOrigin((i + 2) * -2.2 ,-0.6) 
+                        character5Skills[i].setOrigin((i + 2) * -2.2 ,-4.9)  
+                        character6Skills[i].setOrigin((i + 2) * -2.2 ,-8.9)                               
                     }
                     for(let i = 0; i < char4_cooldowns.length; i++){
                         char4_cooldowns[i].setVisible(true).setOrigin((i + 2) * -1.7 ,-2.6).setText("CD: " + character4Skills[i].skill.skill.currentCoolDown).setColor("#FA4D57").setFontSize("20px").setStroke("#000000", 4)
-                        
+                        char5_cooldowns[i].setVisible(true).setOrigin((i + 2) * -1.7 ,-2.6).setText("CD: " + character5Skills[i].skill.skill.currentCoolDown).setColor("#FA4D57").setFontSize("20px").setStroke("#000000", 4)
+                        char6_cooldowns[i].setVisible(true).setOrigin((i + 2) * -1.7 ,-2.6).setText("CD: " + character6Skills[i].skill.skill.currentCoolDown).setColor("#FA4D57").setFontSize("20px").setStroke("#000000", 4)
                     }
                 }
                 
@@ -867,6 +922,23 @@ export class GameScene extends Phaser.Scene{
                            
         })
 
+        this.socket.on("removeEnergy", (energy) => {            
+            this.socket.emit("removeEnergy", energy);   
+        })
+
+        this.socket.on("removeEnergyNow", (energy, returnAmount) => {
+            let energyAmount = Energy[energy];
+            Energy[energy] = 0 
+            if(returnAmount){
+                this.socket.emit("returnEnergyAmount", energyAmount); 
+            }
+        })
+
+        //CHANGE. We can store the amount of energy they have removed. now we just need to add a buff with the correct damage reduction
+        this.socket.on("removeEnergyAmount", (amount) => {
+            console.log("You have removed " + amount + " magic energy from the opponent")
+            
+        })
 
         this.socket.on("use", (skill, character) => {
             console.log("bb cock")
@@ -888,6 +960,10 @@ export class GameScene extends Phaser.Scene{
                 updateEffectVisuals(effects[key].skill, effects[key].character)
             })
             console.log(effects)
+        })
+        
+        this.socket.on("updateDamageDoneTo", function(effect, char){
+            console.log("You used " + effect + " on " + char)
         })
 
         //We probably want to change this so it actually works how we want it to. atm it just generates random number between 0-5 for each energy type
@@ -1483,36 +1559,53 @@ export class GameScene extends Phaser.Scene{
 
         function onHoverSkill(skill){
             if(selectedSkill === undefined){
+                let cost = "Cost: "
                 effectDescTxt.setText("Description: " + skill.skill.skill.description)
+                Object.keys(skill.skill.skill.cost).forEach(effectCost => {
+                    if(skill.skill.skill.cost[effectCost] > 0){
+                        cost += skill.skill.skill.cost[effectCost] + ":" + effectCost + " "
+                    }
+                })
+                effectCostTxt.setText(cost)
             }
         }
 
         function onClickSkill(skill){
             effectDescTxt.setText("Description: " + skill.skill.description)
+            let cost = "Cost: "
+            Object.keys(skill.skill.cost).forEach(effectCost => {
+                if(skill.skill.cost[effectCost] > 0){
+                    cost += skill.skill.cost[effectCost] + ":" + effectCost + " ";
+                }
+            })
+            effectCostTxt.setText(cost)
         }
 
         function onHoverEffect(character, int){
             if(effectDescTxt != "Description: "){
                 savedSkillText = effectDescTxt.text;
+                savedCostText = effectCostTxt.text;
             }else{
-                savedSkillText = "Description: "
+                savedSkillText = ""
+                savedCostText = ""
             }   
-            console.log(character.stats.effect[int -1].name)
-            effectDescTxt.setText("Description: " + character.stats.effect[int -1].name)
+           
         }
 
         function unHoverEffect(){
-            if(savedSkillText === "Description: "){
-                effectDescTxt.setText("Description: ")            
+            if(savedSkillText === ""){
+                effectDescTxt.setText("")    
+                effectCostTxt.setText("")        
             }else{
                 effectDescTxt.setText(savedSkillText)
-                savedSkillText = "Description: "
+                effectCostTxt.setText(savedCostText)
             }
         }
 
         function removeSkillText(){            
             if(selectedSkill === undefined){
-                effectDescTxt.setText("Description: ")
+                effectDescTxt.setText("")
+                effectCostTxt.setText("")
             }
         }
 

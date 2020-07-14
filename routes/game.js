@@ -52,6 +52,8 @@ io.on('connection', function (socket){
     players.push(socket.id);
     let player1 = [players[0]];
     let player2 = [players[1]];
+    let next_turn_damage_reduction = false;
+    
 
     
     //First person to connect is player1
@@ -98,10 +100,23 @@ io.on('connection', function (socket){
         io.emit("returnCalculated", calculateDamage(skill, effect))
     })
 
+    socket.on("removeEnergy", function(energy){
+        if(next_turn_damage_reduction){
+            socket.broadcast.emit("removeEnergyNow", energy, true) 
+        }else{
+            socket.broadcast.emit("removeEnergyNow", energy, false) 
+        }
+    })
+    
+    socket.on("returnEnergyAmount", function(amount){
+        socket.broadcast.emit("removeEnergyAmount", amount)         
+    })
+
     function calculateDamage(effect, characterToUseOn){
         
         let damage = 0;
         let immune = false;
+        
         console.log(JSON.stringify("Used " + effect.name+ " on "+ characterToUseOn.charNumber))
         
         
@@ -119,15 +134,34 @@ io.on('connection', function (socket){
                         damage -= characterToUseOn.effect[key].effect.damage_reduction;
                     }
                 }
-            }
+                
+            }           
+
         })
+
         
+        if(effect.effect.removeEnergy === true){            
+            let energyType = effect.effect.removeEnergyType;
+            if(effect.effect.next_turn_damage_reduction === true){   
+                next_turn_damage_reduction = true;                 
+                io.emit("removeEnergy", (energyType))
+            }else{    
+                next_turn_damage_reduction = false;           
+                io.emit("removeEnergy", (energyType))
+            }
+        }
+
+        if(effect.effect.damage_more_than_once === false){
+            console.log(effect.effect.damageDoneTo)
+            io.emit("updateDamageDoneTo", effect, characterToUseOn.charNumber)
+            effect.effect.damageDoneTo += characterToUseOn.charNumber;
+        }
         //This is where we should calculate the damage and shit
         // We should probably add a check for damage reduction but i cba atm
 
         return {
             damage: damage,
-            charToUseOn: characterToUseOn.charNumber
+            charToUseOn: characterToUseOn.charNumber,            
         }
     }
 

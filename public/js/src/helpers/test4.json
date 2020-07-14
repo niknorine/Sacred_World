@@ -1,14 +1,14 @@
 {
     
 
-    "name": "MirageStepStepStep Step",          
-    "image": "mirage_step",
+    "name": "STANCE OF DEATH",          
+    "image": "stance_of_death",
     "character": "shiro",
-    "selfEffect": false,
+    "selfEffect": true,
     "currentCoolDown": 0,
     "coolDownDuration": 2,
     "duration": 1,
-    "description" : "",
+    "description" : "Shiro gains +10 damage reduction for one turn next turn. If Shiro uses a harmful skill next turn, it will deal 2X damage to the targeted enemy and remove all buffs that they currently possess.",
 
     "cost": {
         "physical": 0,
@@ -21,9 +21,15 @@
 
     "effect":{
         "damage": 40,
-        "damage_reduction": 100,
+        "damage_reduction": 10,
         "next_skill_reduction": "physical",
         "next_skill_reduction_ammount": 1,
-        "lingering_damage": 0
+        "lingering_damage": 0,
+        "nextTurnCheck": "damage",
+        "nextTurnCheckTrue": {
+            "damage": "100%",
+            "removeBuffs": true
+        }
+        
     }
 }

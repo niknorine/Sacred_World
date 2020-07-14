@@ -1,8 +1,8 @@
 {
     
 
-    "name": "Miraassage Step",          
-    "image": "mirage_step",
+    "name": "Arm Quake",          
+    "image": "arm_quake",
     "character": "ren",
     "selfEffect": false,
     "currentCoolDown": 0,

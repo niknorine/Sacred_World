@@ -1,29 +1,32 @@
 {
     
 
-    "name": "Mirage StepStep",          
-    "image": "mirage_step",
+    "name": "Heaven Eater",          
+    "image": "heaven_eater",
     "character": "shiro",
     "selfEffect": false,
     "currentCoolDown": 0,
-    "coolDownDuration": 2,
+    "coolDownDuration": 5,
     "duration": 1,
-    "description" : "",
+    "description" : "Shiro deals 45 damage to one enemy and removes all magic energy from their pool. Shiro will gain 10 points of damage reduction for each magic energy stolen.",
 
     "cost": {
-        "physical": 0,
-        "magic": 0,
+        "physical": 1,
+        "magic": 1,
         "strategy": 0,
         "agility": 0,
         "unique": 0,
-        "support": 1
+        "support": 0
     },
 
     "effect":{
-        "damage": 20,
-        "damage_reduction": 100,
-        "next_skill_reduction": "physical",
-        "next_skill_reduction_ammount": 1,
-        "lingering_damage": 0
+        "damage": 45,
+        "damage_reduction": 0,        
+        "lingering_damage": 0,
+        "counterable": false,
+        "removeEnergy": true,
+        "removeEnergyType": "magic",
+        "next_turn_damage_reduction": true,
+        "next_turn_damage_reduction_amount": 0
     }
 }

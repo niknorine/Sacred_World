@@ -10,8 +10,11 @@ export class GameScene extends Phaser.Scene{
     }
 
 
-    init(){
-        
+    init(data){
+        this.socket = io('http://localhost:1000') // DONT TOUCH THIS. THIS IS THE CONNECTION TO THE SERVER
+        console.log(this.socket.id)
+        console.log(data)
+        this.socketId = data.socketId;
     }
 
     preload() {
@@ -20,8 +23,9 @@ export class GameScene extends Phaser.Scene{
     }
 
     create() {
+        
         var scene = this;
-
+        
         let savedSkillText = "";
         let savedCostText = "";
 
@@ -37,18 +41,17 @@ export class GameScene extends Phaser.Scene{
 
         graphics.fillRectShape(rect).setDepth(200).lineStyle(2, 0x1F1F1F , 1);
         
-        this.socket = io('http://localhost:1000') // DONT TOUCH THIS. THIS IS THE CONNECTION TO THE SERVER
-       
+        
+      
         // We will keep the selected skill. We want to know what skill the character has selected.
         let selectedSkill = {};
 
-        
+    
 
 
         //ARRAYS AND OTHER SHIT
         var gameInitiated = false; 
         let isPlayerA = false;
-        let turn = false;
         let OpponentCharacter = [];
         let characters = [];
         let charactersHeath = [];
@@ -221,9 +224,6 @@ export class GameScene extends Phaser.Scene{
         let char5_skill4_cooldown = this.add.text(0, 0, 'Hello World', { font: '"Press Start 2P"' }).setDepth(101).setVisible(false) ;
         char5_cooldowns.push(char5_skill1_cooldown, char5_skill2_cooldown, char5_skill3_cooldown,char5_skill4_cooldown)
 
-
-
-
         let char6_skill1 = new Skill(this,0,0, "mirage_step", "Mirage Step", char6.stats.name, this.cache.json.get("test")).setDepth(102).setScale(0.5,0.5).setInteractive();
         let char6_skill2 = new Skill(this,0,0, "heaven_eater", "Heaven Eater", char6.stats.name, this.cache.json.get("test2")).setDepth(102).setScale(0.5,0.5).setInteractive();
         let char6_skill3 = new Skill(this,0,0, "devil_piercer", "Stance Of Death", char6.stats.name, this.cache.json.get("test3")).setDepth(102).setScale(0.5,0.5).setInteractive();
@@ -235,20 +235,8 @@ export class GameScene extends Phaser.Scene{
         let char6_skill4_cooldown = this.add.text(0, 0, 'Hello World', { font: '"Press Start 2P"' }).setDepth(101).setVisible(false) ;        
         char6_cooldowns.push(char6_skill1_cooldown, char6_skill2_cooldown, char6_skill3_cooldown,char6_skill4_cooldown)
         
-
-
-        
-
-       
-
-      
-
-        
-
-        
-
         //The energy text. We will change this from text to some ui. This is for testing purposes.
-        var testtext = this.add.text(0, 0, 'skill info', { font: '"Press Start 2P"' }).setDepth(101).setVisible(true) ;
+        var testtext = this.add.text(10, 100, this.socketId, { font: '"Press Start 2P"' }).setDepth(101).setVisible(true) ;
         var physical = this.add.text(10, 540, '', { font: '"Press Start 2P"' }).setDepth(101).setVisible(true).setColor("#ffffff").setFontSize("14px").setStroke("#000000", 4).setText("Physical: " + Energy.physical).setInteractive();
         var magic = this.add.text(160, 540, '', { font: '"Press Start 2P"' }).setDepth(101).setVisible(true).setColor("#ffffff").setFontSize("14px").setStroke("#000000", 4).setText("Magic: " + Energy.magic).setInteractive();
         var strategy = this.add.text(310, 540, '', { font: '"Press Start 2P"' }).setDepth(101).setVisible(true).setColor("#ffffff").setFontSize("14px").setStroke("#000000", 4).setText("Strategy: " + Energy.strategy).setInteractive();
@@ -261,6 +249,10 @@ export class GameScene extends Phaser.Scene{
         // })
 
         var characterText = this.add.text(100, 10, '', { font: '"Press Start 2P"' }).setDepth(101).setVisible(true) ;
+
+        this.socket.on("findRooms", (data) => {
+            //console.log(data)
+        })
 
         // WHEN BOTH PLAYERS HAVE CONNECTED!!!
         this.socket.on("playersConnected", function () {
@@ -389,8 +381,7 @@ export class GameScene extends Phaser.Scene{
                 randomizeAndUpdateEnergy();
 
                 // We have finished initiating the game. we make the variable true so we don't run that code again
-                gameInitiated = true;
-                console.log(gameInitiated)
+                gameInitiated = true;                
             }
 
 
@@ -438,17 +429,8 @@ export class GameScene extends Phaser.Scene{
             this.turn = true;
             
         })
-
         
-        this.socket.on('playersConnected', function(){
-        })
-
-
-        // test.on("pointerup", () => {                 
-        //     this.socket.emit('ready');
-        // })
-
-        //We have a function for this.
+         //We have a function for this.
         this.socket.on('updateEnergy', function(){                      
             physical.setText("Physical: " + Energy.physical).setInteractive();
             magic.setText("Magic: " + Energy.magic).setInteractive();
@@ -457,8 +439,6 @@ export class GameScene extends Phaser.Scene{
             unique.setText("Unique: " + Energy.unique).setInteractive();
             support.setText("Support: " + Energy.support).setInteractive();
         })
-
-
 
         this.socket.on("nextTurn", function(data, skillsUsed){
             //We should create a function that will be in charge of updating the cool downs of the skills
@@ -504,8 +484,6 @@ export class GameScene extends Phaser.Scene{
             }
             clearAllVisuals();
         })
-
-
 
         //ONCE THE PLAYER SELECTS A SKILL
         this.socket.on('selectSkill', function(data, skill, character){  
@@ -558,6 +536,8 @@ export class GameScene extends Phaser.Scene{
             }
         })
       
+
+
 
         char1_skill1.on("pointerdown", () => { 
             if(char1_skill1.skill.skill.selfEffect){

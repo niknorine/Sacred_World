@@ -25,6 +25,18 @@ let whosTurn = "player1"
 
 
 io.on('connection', function (socket){
+    
+    
+    socket.emit('socketId', socket.id)
+
+    socket.on("joinMainRoom", function(){
+        socket.join("mainRoom")
+        socket.leave(socket.id)
+        
+    })
+
+    console.log(io.sockets.adapter.rooms)
+    
     console.log('A user connected ' + socket.id);
 
     Characters.find()
@@ -33,11 +45,36 @@ io.on('connection', function (socket){
         
     })  
 
+
+    socket.on("createRoom", (id) => {
+        socket.join("Game" + id)
+        socket.leave("mainRoom")
+        console.log(io.sockets.adapter.rooms)
+    })
+   
+    socket.on("getAllRooms", () =>{
+        let roomLength = 0 
+        Object.keys(io.sockets.adapter.rooms).forEach(room =>{
+            roomLength++
+            console.log(room)
+        })  
+        socket.emit('getAllGames', io.sockets.adapter.rooms) 
+        
+             
+    })
    
 
+    socket.on("joinGame", () =>{
+        console.log(Object.keys(io.sockets.adapter.rooms)[0])
+    })
+
+    socket.on("leaveRoomQuick", (id) => {
+        socket.leave(id)
+    })
+
     socket.on('disconnect', function(){
-        console.log('User disconnect ' + socket.id)
-        players = players.filter(player => player !== socket.id)
+        console.log('User disconnect ' + socket.id)       
+        socket.leave(socket.id)
     })
 
     socket.on("endTurn", function(skillsUsed){
@@ -63,10 +100,8 @@ io.on('connection', function (socket){
     
     //once both players are connected
     if(players.length === 2){
-        console.log("heree")
-        io.emit('playersConnected')
-        console.log("sss")
-        console.log(io.clients())
+        
+        io.emit('playersConnected')        
         io.emit('updateEnergy')
     }
 

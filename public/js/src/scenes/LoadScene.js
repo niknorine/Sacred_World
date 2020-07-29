@@ -21,7 +21,7 @@ export class LoadScene extends Phaser.Scene{
         this.load.image('background', '/js/src/assets/background.jpg')
         this.load.image('logo', '/js/src/assets/logo.png')
         this.load.image('start', '/js/src/assets/start.png')
-
+        this.load.image('create', '/js/src/assets/create.png')
 
         //skills
         this.load.image('mirage_step', '/js/src/assets/mirage_step.png')

@@ -11,9 +11,10 @@ export class GameScene extends Phaser.Scene{
 
 
     init(data){
-        this.socket = io('http://localhost:1000') // DONT TOUCH THIS. THIS IS THE CONNECTION TO THE SERVER
+        // this.socket = io('http://localhost:1000') // DONT TOUCH THIS. THIS IS THE CONNECTION TO THE SERVER
         console.log(this.socket.id)
         console.log(data)
+     
         this.socketId = data.socketId;
     }
 

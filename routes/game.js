@@ -11,10 +11,13 @@ db.once('open', error=> console.log('connected at users.js'))
 
 const http = require('http').createServer(express)
 const io = require('socket.io')(http);
+
+
 let players = [];
-
-
 let whosTurn = "player1"
+
+var clients =[];
+
 
 //THIS IS THE SERVER SIDE
 
@@ -24,20 +27,43 @@ let whosTurn = "player1"
 //BROADCAST MEANS SEND DATA TO EVERYONE EXCEPT THE USER REQUESTING
 
 
+
+
+
+
+
 io.on('connection', function (socket){
     
-    
-    socket.emit('socketId', socket.id)
 
-    socket.on("joinMainRoom", function(){
-        socket.join("mainRoom")
-        socket.leave(socket.id)
-        
+    socket.on('newplayer',function(){
+        console.log("horray " + socket.id)
     })
 
+
+    socket.on('storeClientInfo', function (data) {
+        let dataParse = JSON.parse(data)
+        console.log(dataParse.name)
+        socket.emit("sendData", dataParse)
+    });
+
+
+    socket.emit('socketId', socket.id)
+    socket.on("joinMainRoom", function(){
+        socket.join("mainRoom")
+        socket.leave(socket.id)        
+    })
+
+    socket.on("test1", (user) =>{
+        clientData = JSON.parse(user)        
+        socket.clientUsername = clientData.name
+        console.log("id: "+ socket.id + "   username: " + socket.clientUsername)
+        
+    })
+    
     console.log(io.sockets.adapter.rooms)
     
     console.log('A user connected ' + socket.id);
+    
 
     Characters.find()
     .then(character =>{  
@@ -45,11 +71,12 @@ io.on('connection', function (socket){
         
     })  
 
+    socket.on("clientData", (data) => { 
+        
+    })
 
     socket.on("createRoom", (id) => {
-        socket.join("Game" + id)
-        socket.leave("mainRoom")
-        console.log(io.sockets.adapter.rooms)
+        console.log("id: "+ socket.id + "username: " + socket.clientUsername)
     })
    
     socket.on("getAllRooms", () =>{
@@ -200,9 +227,12 @@ io.on('connection', function (socket){
         }
     }
 
+    function setClientData(data){
+        socket.clientData = data
+    }
+
 
 })
-
 
 
 http.listen(1000, function () {
@@ -212,17 +242,22 @@ http.listen(1000, function () {
 
 
 
-
-
-router.get("/", authUser,(req, res) => {
+router.get("/", authUser,function(req, res)  {
     if(req.isAuthenticated()){
-        user = req.user
+        user = req.user         
+        
+
         res.render('client/index.ejs',{       
             isLoggedIn: true,
             user: user
         })
         }    
 })
+
+
+
+
+
 
 
 module.exports = router;

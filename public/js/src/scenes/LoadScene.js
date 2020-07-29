@@ -57,7 +57,6 @@ export class LoadScene extends Phaser.Scene{
         this.load.json("test12", '/js/src/helpers/test12.json')
 
 
-        
 
         //for audio
         //this.load.audio("name", "path")
@@ -82,7 +81,7 @@ export class LoadScene extends Phaser.Scene{
     }
 
     create(){
-       
+        
     }
 
 }

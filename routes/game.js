@@ -37,6 +37,7 @@ io.on('connection', function (socket){
 
     socket.on('newplayer',function(){
         console.log("horray " + socket.id)
+        socket.emit("getId",  socket.id)
     })
 
 
@@ -231,6 +232,13 @@ io.on('connection', function (socket){
         socket.clientData = data
     }
 
+    socket.on("test", function(id){
+        console.log("HELLO " + id)
+        socket.emit("test3", id);
+    })
+
+    
+
 
 })
 
@@ -244,16 +252,24 @@ http.listen(1000, function () {
 
 router.get("/", authUser,function(req, res)  {
     if(req.isAuthenticated()){
-        user = req.user         
-        
-
+        user = req.user 
+        sendUserData()
         res.render('client/index.ejs',{       
             isLoggedIn: true,
             user: user
-        })
+        })        
+        
         }    
 })
 
+
+function sendUserData() {
+    console.log("ss")
+    var socket = io
+    setTimeout(function () {
+        socket.emit("test111", user.name)
+    }, 3000);
+}
 
 
 

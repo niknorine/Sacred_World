@@ -1,28 +1,60 @@
-var Client = {};
+import {MenuScene} from "/js/src/scenes/MenuScene.js"
 
-Client.data = {}
+export var Client = {}; // Do not touch
 
-Client.socket = io('http://localhost:1000');
+Client.data = {} // Do not touch
 
-Client.askNewPlayer = function(){
-    Client.socket.emit('newplayer');
+Client.socket = io('http://localhost:1000'); // Do not touch
+
+
+// WE WILL ADD ALL THE SENDING/EMITING FUNCTIONS HERE 
+//this is where the user sends a request to the server
+
+Client.clientConnected = function(){
+    Client.socket.emit('clientConnected', Client.data.id);
+
+    
 };
+
+Client.sendUser = function(user){    
+    Client.socket.emit('sendUsername', user);
+};
+
+Client.checkConnection = function(){
+    Client.socket.emit("checkConnection")
+}
+
+Client.finishedLoading = function(){
+    let menu = new MenuScene;
+    menu.Test1()
+}
+
+
+
+
+
+
+
+//////////////////////////////////////
+
+
+
+// WE WILL ADD ALL THE RECEIVING FUNCTIONS HERE
+//this is where the user receives a request from the server
 
 Client.socket.on("getId", function(socketId){
     Client.data.id = socketId; 
     console.log(Client.data)
 })
 
-Client.socket.on('test111',function(data){
-    Client.data.name = data;    
-    console.log(Client.data)
-});
-
-Client.sendTest = function(user){
-    console.log("test sent");
-    Client.socket.emit('test', user);
-  };
-
-Client.socket.on("test3", function(id){    
-    console.log("Your username is: " + id)
+Client.socket.on("sendUsernameToClient", function(id){
+    Client.data.id = id;
+    Client.socket.emit('changeRoom', 'main')
 })
+
+Client.socket.on("alreadyConnected", function(){
+    
+})
+
+
+

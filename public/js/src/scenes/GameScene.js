@@ -1,6 +1,8 @@
 import {CST} from "/js/src/scenes/CST.js"
 
+
 //CLIENT SIDE 
+
 
 export class GameScene extends Phaser.Scene{
     constructor(){
@@ -8,7 +10,6 @@ export class GameScene extends Phaser.Scene{
             key: CST.SCENES.GAME
         })
     }
-
 
     init(data){
         // this.socket = io('http://localhost:1000') // DONT TOUCH THIS. THIS IS THE CONNECTION TO THE SERVER
@@ -1594,6 +1595,8 @@ export class GameScene extends Phaser.Scene{
 
         }
 
+        
+
     }  
 
     update(){
@@ -1603,5 +1606,7 @@ export class GameScene extends Phaser.Scene{
 
     
 }
+
+
 
 

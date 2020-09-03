@@ -11,17 +11,17 @@
   <body>
     <h1><%-"<h4'> Hi "+ user.name +"</h4>" %></h1>
   </body>
-
+  
   <script src = '/js/src/helpers/Character.js'></script>
   <script src = '/js/src/helpers/Skill.js'></script>
   <script src = '/js/src/helpers/StanceOfDeath.js'></script>
   <script src = '/js/src/helpers/Effect.js'></script>
   <script src = '/js/src/helpers/Buff.js'></script>
-  <script src="js/src/client.js" type="text/javascript"></script>
+  <script type = 'module' src="js/src/client.js"></script>
 
   <script>
     var user = "<%-user.name%>";
-    Client.sendTest(user);
+    Client.sendUser(user);
   </script>
  
 </html>

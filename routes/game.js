@@ -16,7 +16,7 @@ const io = require('socket.io')(http);
 let players = [];
 let whosTurn = "player1"
 
-var clients =[];
+let clients =[];
 
 
 //THIS IS THE SERVER SIDE
@@ -34,6 +34,9 @@ var clients =[];
 
 io.on('connection', function (socket){
     
+    socket.on("clientConnected", function(id){
+        console.log(id)
+    })
 
     socket.on('newplayer',function(){
         console.log("horray " + socket.id)
@@ -134,18 +137,19 @@ io.on('connection', function (socket){
     }
 
 
-
+    socket.on("changeRoom", function(room){        
+        socket.join(room)
+        socket.leave(socket.id)   
+        console.log(io.sockets.adapter.rooms)
+    })
     
 
     socket.on("clickSkill", function(skill, character) {          
         socket.emit("selectSkill", whosTurn, skill, character)
     })
 
-    socket.on("use", function(skill, characterToUseOn){
-        
+    socket.on("use", function(skill, characterToUseOn){        
             socket.emit("use", skill, characterToUseOn)
-            
-        
     })
 
     socket.on("getEnemyTurn", function(effectArray){
@@ -232,10 +236,29 @@ io.on('connection', function (socket){
         socket.clientData = data
     }
 
-    socket.on("test", function(id){
-        console.log("HELLO " + id)
-        socket.emit("test3", id);
+    socket.on("sendUsername", function(id){
+        socket.username = id;
+        socket.emit("sendUsernameToClient", id)
     })
+    
+    socket.on("checkConnection", function(id){
+        Object.keys(clients).forEach(client =>{
+            console.log("something: " + clients[client])
+            if(clients[client] === id){
+                socket.emit("alreadyConnected")
+                socket.disconnect();
+            }
+            else{
+                clients.push(id)
+            }
+        })
+
+        if(clients.length === 0){
+            clients.push(id)
+        }
+        console.log("user with id: " + socket.id + "and username of: " + id + " has connected ")
+    })
+
 
     
 
